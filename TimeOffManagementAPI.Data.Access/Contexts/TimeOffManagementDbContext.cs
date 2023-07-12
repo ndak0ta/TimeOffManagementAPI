@@ -7,7 +7,6 @@ public class TimeOffManagementDBContext : DbContext
 {
     public DbSet<TimeOffRequest>? TimeOffRequests { get; set; }
     public DbSet<User>? Users { get; set; }
-    public DbSet<Role>? Roles { get; set; }
 
     public TimeOffManagementDBContext(DbContextOptions<TimeOffManagementDBContext> options) : base(options)
     {

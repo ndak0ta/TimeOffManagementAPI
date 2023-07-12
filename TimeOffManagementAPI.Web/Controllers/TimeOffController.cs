@@ -14,7 +14,7 @@ public class TimeOffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        return Ok("Hello World!");
+        throw new KeyNotFoundException("No time off requests found.");
     }
 
     [HttpGet("{id}")]
@@ -23,10 +23,16 @@ public class TimeOffController : ControllerBase
         return Ok("Hello World!");
     }
 
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetByUserIdAsync(int userId)
+    {
+        return Ok("Hello World!");
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] TimeOffRequest timeOffRequest)
     {
-        return Ok("Hello World!");
+        return Ok("Hello World!"); // created (201) kuıllanmayı unutma
     }
 
     [HttpPut]

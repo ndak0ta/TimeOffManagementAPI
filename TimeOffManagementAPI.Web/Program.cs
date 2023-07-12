@@ -1,15 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TimeOffManagementAPI.Web.Filters;
 using TimeOffManagementAPI.Data.Access.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile($"appsettings.local.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<TimeOffManagementDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("TimeOffManagementDBContext")));
 
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add<ExceptionFilter>();
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
