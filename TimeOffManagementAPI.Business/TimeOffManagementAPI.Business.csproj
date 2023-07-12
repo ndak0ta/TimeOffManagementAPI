@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimeOffManagementAPI.Data.Access\TimeOffManagementAPI.Data.Access.csproj" />
+    <ProjectReference Include="..\TimeOffManagementAPI.Data.Model\TimeOffManagementAPI.Data.Model.csproj" />
+  </ItemGroup>
+</Project>

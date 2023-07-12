@@ -20,5 +20,14 @@
     <ProjectReference Include="..\TimeOffManagementAPI.Data.Access\TimeOffManagementAPI.Data.Access.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\TimeOffManagementAPI.Business\TimeOffManagementAPI.Business.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\TimeOffManagementAPI.Data.Model\TimeOffManagementAPI.Data.Model.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\TimeOffManagementAPI.Exceptions\TimeOffManagementAPI.Exceptions.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>

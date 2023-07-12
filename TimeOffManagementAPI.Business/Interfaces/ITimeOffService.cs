@@ -1,8 +1,8 @@
 using TimeOffManagementAPI.Data.Model;
 
-namespace TimeOffManagementAPI.Data.Access.Interfaces;
+namespace TimeOffManagementAPI.Business.Interfaces;
 
-public interface ITimeOffRepository
+public interface ITimeOffService
 {
     public Task<IEnumerable<TimeOffRequest>> GetAllAsync();
     public Task<TimeOffRequest> GetByIdAsync(int id);

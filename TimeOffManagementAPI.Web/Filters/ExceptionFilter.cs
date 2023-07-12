@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Filters;
+using TimeOffManagementAPI.Exceptions;
 
 namespace TimeOffManagementAPI.Web.Filters;
 
@@ -13,11 +14,14 @@ public class ExceptionFilter : IExceptionFilter
 
         switch (context.Exception)
         {
-            case KeyNotFoundException:
+            case NotFoundException:
                 response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
-            case FormatException:
+            case ArgumentNullException:
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
+                break;
+            case DuplicateRecordException:
+                response.StatusCode = (int)HttpStatusCode.Conflict;
                 break;
             case UnauthorizedAccessException:
                 response.StatusCode = (int)HttpStatusCode.Unauthorized;
