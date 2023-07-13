@@ -1,15 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Web.Filters;
 using TimeOffManagementAPI.Data.Access.Contexts;
+using TimeOffManagementAPI.Data.Access.Repositories;
+using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Business.Interfaces;
+using TimeOffManagementAPI.Business.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
 
 // Add services to the container.
-builder.Services.AddControllers();
 builder.Services.AddDbContext<TimeOffManagementDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("TimeOffManagementDBContext")));
+
+builder.Services.AddScoped<ITimeOffRepository, TimeOffRepository>();
+builder.Services.AddScoped<ITimeOffService, TimeOffService>();
 
 builder.Services.AddMvc(options =>
 {

@@ -38,8 +38,10 @@ public class TimeOffService : ITimeOffService
         return await _timeOffRepository.UpdateAsync(timeOffRequest);
     }
 
-    public async Task<TimeOffRequest> DeleteAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOffRequest> DeleteAsync(int id)
     {
+        var timeOffRequest = await _timeOffRepository.GetByIdAsync(id);
+
         return await _timeOffRepository.DeleteAsync(timeOffRequest);
     }
 }

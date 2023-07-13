@@ -7,6 +7,7 @@ public class TimeOffManagementDBContext : DbContext
 {
     public DbSet<TimeOffRequest>? TimeOffRequests { get; set; }
     public DbSet<User>? Users { get; set; }
+    public DbSet<Role>? Roles { get; set; }
 
     public TimeOffManagementDBContext(DbContextOptions<TimeOffManagementDBContext> options) : base(options)
     {
@@ -14,8 +15,15 @@ public class TimeOffManagementDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
+        modelBuilder.Entity<User>(entitiy =>
+        {
+            entitiy.HasIndex(u => u.Username).IsUnique();
+            entitiy.HasIndex(u => u.Email).IsUnique();
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasIndex(r => r.Name).IsUnique();
+        });
     }
 }

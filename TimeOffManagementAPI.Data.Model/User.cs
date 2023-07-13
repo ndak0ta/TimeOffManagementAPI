@@ -19,7 +19,7 @@ public class User
 
     [MaxLength(20)]
     [Required]
-    public string? Password { get; set; }
+    public string? Password { get; set; } // TODO Daha sonra encrypt edilecek
 
     [MaxLength(15)]
     [Required]
@@ -46,7 +46,7 @@ public class User
     [Required]
     public int AnnualTimeOffs { get; set; }
 
-    [MaxLength(10)]
+    [ForeignKey("Role")]
     [Required]
-    public string? Role { get; set; }
+    public int RoleId { get; set; }
 }

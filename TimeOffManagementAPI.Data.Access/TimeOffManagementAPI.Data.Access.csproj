@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TimeOffManagementAPI.Data.Model\TimeOffManagementAPI.Data.Model.csproj" />
+    <ProjectReference Include="..\TimeOffManagementAPI.Exceptions\TimeOffManagementAPI.Exceptions.csproj" />
   </ItemGroup>
 </Project>

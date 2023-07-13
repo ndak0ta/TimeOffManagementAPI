@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model;
 using TimeOffManagementAPI.Business.Interfaces;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class TimeOffController : ControllerBase
@@ -16,6 +18,7 @@ public class TimeOffController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _timeOffService.GetAllAsync());
@@ -45,10 +48,10 @@ public class TimeOffController : ControllerBase
         return Ok(await _timeOffService.UpdateAsync(timeOffRequest));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteAsync([FromBody] TimeOffRequest timeOffRequest)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteAsync(int id)
     {
-        return Ok(await _timeOffService.DeleteAsync(timeOffRequest));
+        return Ok(await _timeOffService.DeleteAsync(id));
     }
 }
 

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model;
+using TimeOffManagementAPI.Exceptions;
 
 namespace TimeOffManagementAPI.Data.Access.Repositories;
 
@@ -29,12 +30,12 @@ public class TimeOffRepository : ITimeOffRepository
             var result = await _context.TimeOffRequests.FirstOrDefaultAsync(t => t.Id == id);
 
             if (result == null)
-                throw new KeyNotFoundException($"No time off request found with id {id}.");
+                throw new NotFoundException($"No time off request found with id {id}.");
 
             return result;
         }
         else
-            throw new KeyNotFoundException($"No time off request found with id {id}.");
+            throw new NotFoundException($"No time off request found with id {id}.");
     }
 
     public async Task<IEnumerable<TimeOffRequest>> GetByUserIdAsync(int userId)
@@ -44,12 +45,12 @@ public class TimeOffRepository : ITimeOffRepository
             var result = await _context.TimeOffRequests.Where(t => t.userId == userId).ToListAsync();
 
             if (result == null)
-                throw new KeyNotFoundException($"No time off request found with id {userId}.");
+                throw new NotFoundException($"No time off request found with id {userId}.");
 
             return result;
         }
         else
-            throw new KeyNotFoundException($"No time off request found with id {userId}.");
+            throw new NotFoundException($"No time off request found with id {userId}.");
 
     }
 
