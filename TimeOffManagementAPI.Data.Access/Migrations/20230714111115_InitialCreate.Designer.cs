@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeOffManagementAPI.Data.Access.Contexts;
 
@@ -11,9 +12,11 @@ using TimeOffManagementAPI.Data.Access.Contexts;
 namespace TimeOffManagementAPI.Data.Access.Migrations
 {
     [DbContext(typeof(TimeOffManagementDBContext))]
-    partial class TimeOffManagementDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230714111115_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

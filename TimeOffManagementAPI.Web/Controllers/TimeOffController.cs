@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using TimeOffManagementAPI.Data.Model;
+using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Business.Interfaces;
 
 namespace TimeOffManagementAPI.Web.Controllers;
@@ -17,8 +17,8 @@ public class TimeOffController : ControllerBase
         _timeOffService = timeOffService;
     }
 
-    [HttpGet]
     [Authorize(Roles = "Manager")]
+    [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _timeOffService.GetAllAsync());
@@ -44,7 +44,7 @@ public class TimeOffController : ControllerBase
 
     [HttpPut]
     public async Task<IActionResult> UpdateAsync([FromBody] TimeOffRequest timeOffRequest)
-    { 
+    {
         return Ok(await _timeOffService.UpdateAsync(timeOffRequest));
     }
 

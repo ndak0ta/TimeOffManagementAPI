@@ -1,6 +1,6 @@
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Data.Access.Interfaces;
-using TimeOffManagementAPI.Data.Model;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Business.Services;
 

@@ -1,13 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using TimeOffManagementAPI.Data.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Data.Access.Contexts;
 
-public class TimeOffManagementDBContext : DbContext
+public class TimeOffManagementDBContext : IdentityDbContext<User>
 {
     public DbSet<TimeOffRequest>? TimeOffRequests { get; set; }
-    public DbSet<User>? Users { get; set; }
-    public DbSet<Role>? Roles { get; set; }
 
     public TimeOffManagementDBContext(DbContextOptions<TimeOffManagementDBContext> options) : base(options)
     {
@@ -15,15 +14,7 @@ public class TimeOffManagementDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>(entitiy =>
-        {
-            entitiy.HasIndex(u => u.Username).IsUnique();
-            entitiy.HasIndex(u => u.Email).IsUnique();
-        });
+        base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Role>(entity =>
-        {
-            entity.HasIndex(r => r.Name).IsUnique();
-        });
     }
 }

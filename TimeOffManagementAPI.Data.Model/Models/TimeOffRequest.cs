@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TimeOffManagementAPI.Data.Model;
+namespace TimeOffManagementAPI.Data.Model.Models;
 
 public class TimeOffRequest
 {
@@ -25,7 +25,7 @@ public class TimeOffRequest
     public bool isApproved { get; set; }
 
     [ForeignKey("User")]
-    public int userId { get; set; }
+    public string? userId { get; set; }
 
     public User? User { get; set; }
 }

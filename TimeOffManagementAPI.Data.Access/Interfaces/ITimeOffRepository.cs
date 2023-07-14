@@ -1,4 +1,4 @@
-using TimeOffManagementAPI.Data.Model;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Data.Access.Interfaces;
 

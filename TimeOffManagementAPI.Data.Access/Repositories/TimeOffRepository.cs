@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Interfaces;
-using TimeOffManagementAPI.Data.Model;
+using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Exceptions;
 
 namespace TimeOffManagementAPI.Data.Access.Repositories;
@@ -35,14 +35,14 @@ public class TimeOffRepository : ITimeOffRepository
             return result;
         }
         else
-            throw new NotFoundException($"No time off request found with id {id}.");
+            throw new Exception("Internal server error.");
     }
 
     public async Task<IEnumerable<TimeOffRequest>> GetByUserIdAsync(int userId)
     {
         if (_context.TimeOffRequests != null)
         {
-            var result = await _context.TimeOffRequests.Where(t => t.userId == userId).ToListAsync();
+            var result = await _context.TimeOffRequests.Where(t => t.userId == userId.ToString()).ToListAsync();
 
             if (result == null)
                 throw new NotFoundException($"No time off request found with id {userId}.");
@@ -50,7 +50,7 @@ public class TimeOffRepository : ITimeOffRepository
             return result;
         }
         else
-            throw new NotFoundException($"No time off request found with id {userId}.");
+            throw new Exception("Internal server error.");
 
     }
 
@@ -64,7 +64,7 @@ public class TimeOffRepository : ITimeOffRepository
             return result.Entity;
         }
         else
-            throw new KeyNotFoundException($"No time off request found with id {timeOffRequest.Id}.");
+            throw new Exception("Internal server error.");
     }
 
     public async Task<TimeOffRequest> UpdateAsync(TimeOffRequest timeOffRequest)
@@ -77,7 +77,7 @@ public class TimeOffRepository : ITimeOffRepository
             return result.Entity;
         }
         else
-            throw new KeyNotFoundException($"No time off request found with id {timeOffRequest.Id}.");
+            throw new Exception("Internal server error.");
     }
 
     public async Task<TimeOffRequest> DeleteAsync(TimeOffRequest timeOffRequest)
@@ -90,6 +90,6 @@ public class TimeOffRepository : ITimeOffRepository
             return result.Entity;
         }
         else
-            throw new KeyNotFoundException($"No time off request found with id {timeOffRequest.Id}.");
+            throw new Exception("Internal server error.");
     }
 }

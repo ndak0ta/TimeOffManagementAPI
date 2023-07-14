@@ -2,7 +2,7 @@
 
 public class DuplicateRecordException : Exception
 {
-    public DuplicateRecordException() : base("Tekrarlı kayıt hatası")
+    public DuplicateRecordException() : base("Dubplicate record found.")
     {
     }
 
