@@ -27,7 +27,7 @@ public class UserController : ControllerBase
 
     [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    public async Task<IActionResult> GetByIdAsync(string id)
     {
         return Ok(await _userService.GetByIdAsync(id));
     }
@@ -57,7 +57,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteAsync(int id)
+    public async Task<IActionResult> DeleteAsync(string id)
     {
         return Ok(await _userService.DeleteAsync(id));
     }

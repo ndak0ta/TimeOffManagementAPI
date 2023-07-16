@@ -1,17 +1,20 @@
 ﻿using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TimeOffManagementAPI.Web.Filters;
+using TimeOffManagementAPI.Business.Interfaces;
+using TimeOffManagementAPI.Business.Services;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Repositories;
 using TimeOffManagementAPI.Data.Access.Interfaces;
-using TimeOffManagementAPI.Business.Interfaces;
-using TimeOffManagementAPI.Business.Services;
+using TimeOffManagementAPI.Data.Model.Mappings;
 using TimeOffManagementAPI.Data.Model.Models;
+using AutoMapper;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,17 @@ builder.Services.AddMvc(options =>
 {
     options.Filters.Add<ExceptionFilter>();
 });
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+var mapperConfig = new MapperConfiguration(map =>
+{
+    map.AddProfile<UserMappingProfile>();
+});
+builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
 builder.Services.AddControllers();
 

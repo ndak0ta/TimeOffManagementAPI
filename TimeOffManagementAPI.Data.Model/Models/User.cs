@@ -18,4 +18,6 @@ public class User : IdentityUser
     public DateTime HireDate { get; set; }
 
     public int AnnualTimeOffs { get; set; }
+
+    public bool isActive { get; set; }
 }
