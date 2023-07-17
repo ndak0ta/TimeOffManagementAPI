@@ -50,6 +50,8 @@ public class UserService : IUserService
     {
         var user = _mapper.Map<User>(userRegistration);
 
+        await _userManager.AddToRoleAsync(user, "Employee");
+
         return await _userManager.CreateAsync(user, userRegistration.Password);
     }
 

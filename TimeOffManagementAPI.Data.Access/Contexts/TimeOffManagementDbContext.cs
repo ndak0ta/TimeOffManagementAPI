@@ -4,7 +4,7 @@ using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Data.Access.Contexts;
 
-public class TimeOffManagementDBContext : IdentityDbContext<User>
+public class TimeOffManagementDBContext : IdentityDbContext<User, Role, string>
 {
     public DbSet<TimeOff>? TimeOffs { get; set; }
 

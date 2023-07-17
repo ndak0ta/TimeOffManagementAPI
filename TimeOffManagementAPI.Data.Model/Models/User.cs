@@ -8,6 +8,7 @@ public class User : IdentityUser
     {
         AnnualTimeOffs = 14;
         isActive = true;
+        LockoutEnd = DateTime.Now + TimeSpan.FromMinutes(5); // TODO sonra revize et
     }
 
     public string? FirstName { get; set; }

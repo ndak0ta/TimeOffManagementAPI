@@ -32,20 +32,16 @@ public class TimeOffService : ITimeOffService
         return await _timeOffRepository.GetByUserIdAsync(userId);
     }
 
-    public async Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest, string userId)
+    public async Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest)
     {
         var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
-
-        timeoff.userId = userId;
 
         return await _timeOffRepository.CreateAsync(timeoff);
     }
 
-    public async Task<TimeOff> UpdateAsync(TimeOffRequest timeOffRequest, string userId)
+    public async Task<TimeOff> UpdateAsync(TimeOffRequest timeOffRequest)
     {
         var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
-
-        timeoff.userId = userId;
 
         return await _timeOffRepository.UpdateAsync(timeoff);
     }

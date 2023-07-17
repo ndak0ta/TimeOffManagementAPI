@@ -3,7 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Dtos;
+using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Business.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -44,7 +46,6 @@ public class TimeOffController : ControllerBase
         return Ok(await _timeOffService.GetByUserIdAsync(userId));
     }
 
-
     [Authorize(Roles = "Manager")]
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUserIdAsync(string userId)
@@ -60,7 +61,9 @@ public class TimeOffController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(userId); // TODO mesaj yaz
 
-        return Created("", await _timeOffService.CreateAsync(timeOffRequest, userId));
+        timeOffRequest.UserId = userId;
+
+        return Created("", await _timeOffService.CreateAsync(timeOffRequest));
     }
 
     [HttpPut]
@@ -71,7 +74,9 @@ public class TimeOffController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(); // TODO mesaj yaz
 
-        return Ok(await _timeOffService.UpdateAsync(timeOffRequest, userId));
+        timeOffRequest.UserId = userId;
+
+        return Ok(await _timeOffService.UpdateAsync(timeOffRequest));
     }
 
     [HttpDelete("{id:int}")]

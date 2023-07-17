@@ -44,7 +44,7 @@ var mapperConfig = new MapperConfiguration(map =>
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
 
-builder.Services.AddIdentity<User, IdentityRole>(o =>
+builder.Services.AddIdentity<User, Role>(o =>
 {
     o.Password.RequireDigit = false;
     o.Password.RequireLowercase = false;

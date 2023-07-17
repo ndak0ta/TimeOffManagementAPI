@@ -7,7 +7,7 @@ public class TimeOff
 {
     public TimeOff()
     {
-        isApproved = false;
+        IsApproved = false;
     }
 
     [Key]
@@ -22,12 +22,12 @@ public class TimeOff
     [Required]
     public DateTime EndDate { get; set; }
 
-    public bool isApproved { get; set; }
+    public bool IsApproved { get; set; }
 
-    public bool isActive { get; set; }
+    public bool IsActive { get; set; }
 
     [ForeignKey("User")]
-    public string? userId { get; set; }
+    public string? UserId { get; set; }
 
     public User? User { get; set; }
 }

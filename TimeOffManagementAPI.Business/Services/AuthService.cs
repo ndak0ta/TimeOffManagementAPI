@@ -48,7 +48,7 @@ public class AuthService : IAuthService
 
     public async Task<IdentityResult> RegisterAsync(UserRegistrationDto userRegistration)
     {
-        return await _userService.CreateAsync(userRegistration); // TODO  Identity'nin kendi metodlarını kullan
+        return await _userService.CreateAsync(userRegistration); // TODO Identity'nin kendi metodlarını kullan
     }
 
     private string GenerateAccessToken(User user)

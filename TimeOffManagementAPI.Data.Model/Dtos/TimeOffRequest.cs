@@ -13,4 +13,7 @@ public class TimeOffRequest
 
     [Required]
     public DateTime EndDate { get; set; }
+
+    [Required]
+    public string? UserId { get; set; }
 }

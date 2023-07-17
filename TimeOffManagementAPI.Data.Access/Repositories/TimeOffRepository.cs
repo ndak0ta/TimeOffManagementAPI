@@ -42,7 +42,7 @@ public class TimeOffRepository : ITimeOffRepository
     {
         if (_context.TimeOffs != null)
         {
-            var result = await _context.TimeOffs.Where(t => t.userId == userId.ToString()).ToListAsync();
+            var result = await _context.TimeOffs.Where(t => t.UserId == userId.ToString()).ToListAsync();
 
             if (result == null)
                 throw new NotFoundException($"No time off request found with id {userId}.");
@@ -88,7 +88,7 @@ public class TimeOffRepository : ITimeOffRepository
             if (result == null)
                 throw new NotFoundException($"No time off request found with id {id}.");
 
-            result.isActive = false;
+            result.IsActive = false;
 
             _context.TimeOffs.Update(result);
             await _context.SaveChangesAsync();
