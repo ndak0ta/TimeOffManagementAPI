@@ -1,48 +1,58 @@
+using AutoMapper;
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Models;
+using TimeOffManagementAPI.Data.Model.Dtos;
 
 namespace TimeOffManagementAPI.Business.Services;
 
 public class TimeOffService : ITimeOffService
 {
     public readonly ITimeOffRepository _timeOffRepository;
+    private readonly IMapper _mapper;
 
-    public TimeOffService(ITimeOffRepository timeOffRepository)
+    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper)
     {
         _timeOffRepository = timeOffRepository;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<TimeOffRequest>> GetAllAsync()
+    public async Task<IEnumerable<TimeOff>> GetAllAsync()
     {
         return await _timeOffRepository.GetAllAsync();
     }
 
-    public async Task<TimeOffRequest> GetByIdAsync(int id)
+    public async Task<TimeOff> GetByIdAsync(int id)
     {
         return await _timeOffRepository.GetByIdAsync(id);
     }
 
-    public async Task<IEnumerable<TimeOffRequest>> GetByUserIdAsync(int userId)
+    public async Task<IEnumerable<TimeOff>> GetByUserIdAsync(string userId)
     {
         return await _timeOffRepository.GetByUserIdAsync(userId);
     }
 
-    public async Task<TimeOffRequest> CreateAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest, string userId)
     {
-        return await _timeOffRepository.CreateAsync(timeOffRequest);
+        var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
+
+        timeoff.userId = userId;
+
+        return await _timeOffRepository.CreateAsync(timeoff);
     }
 
-    public async Task<TimeOffRequest> UpdateAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOff> UpdateAsync(TimeOffRequest timeOffRequest, string userId)
     {
-        return await _timeOffRepository.UpdateAsync(timeOffRequest);
+        var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
+
+        timeoff.userId = userId;
+
+        return await _timeOffRepository.UpdateAsync(timeoff);
     }
 
-    public async Task<TimeOffRequest> DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        var timeOffRequest = await _timeOffRepository.GetByIdAsync(id);
-
-        return await _timeOffRepository.DeleteAsync(timeOffRequest);
+        await _timeOffRepository.DeleteAsync(id);
     }
 }
 

@@ -18,14 +18,13 @@ using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<TimeOffManagementDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("TimeOffManagementDBContext")));
-
-builder.Services.AddScoped<ITimeOffRepository, TimeOffRepository>();
-builder.Services.AddScoped<ITimeOffService, TimeOffService>();
 
 builder.Services.AddMvc(options =>
 {
@@ -40,10 +39,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 var mapperConfig = new MapperConfiguration(map =>
 {
     map.AddProfile<UserMappingProfile>();
+    map.AddProfile<TimeOffMappingProfile>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
-builder.Services.AddControllers();
 
 builder.Services.AddIdentity<User, IdentityRole>(o =>
 {
@@ -56,6 +55,14 @@ builder.Services.AddIdentity<User, IdentityRole>(o =>
 })
 .AddEntityFrameworkStores<TimeOffManagementDBContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<ITimeOffRepository, TimeOffRepository>();
+builder.Services.AddTransient<ITimeOffService, TimeOffService>();
+
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserService, UserService>();
+
+builder.Services.AddTransient<IAuthService, AuthService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -70,8 +77,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey
-        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -80,6 +86,8 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -123,8 +131,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

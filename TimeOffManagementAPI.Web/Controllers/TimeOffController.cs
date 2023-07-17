@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using TimeOffManagementAPI.Data.Model.Models;
+using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
 
 namespace TimeOffManagementAPI.Web.Controllers;
@@ -18,20 +20,34 @@ public class TimeOffController : ControllerBase
     }
 
     [Authorize(Roles = "Manager")]
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _timeOffService.GetAllAsync());
     }
 
+    [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _timeOffService.GetByIdAsync(id));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetByUserIdAsync()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        return Ok(await _timeOffService.GetByUserIdAsync(userId));
+    }
+
+
+    [Authorize(Roles = "Manager")]
     [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetByUserIdAsync(int userId)
+    public async Task<IActionResult> GetByUserIdAsync(string userId)
     {
         return Ok(await _timeOffService.GetByUserIdAsync(userId));
     }
@@ -39,19 +55,31 @@ public class TimeOffController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] TimeOffRequest timeOffRequest)
     {
-        return Created("", await _timeOffService.CreateAsync(timeOffRequest));
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId); // TODO mesaj yaz
+
+        return Created("", await _timeOffService.CreateAsync(timeOffRequest, userId));
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateAsync([FromBody] TimeOffRequest timeOffRequest)
     {
-        return Ok(await _timeOffService.UpdateAsync(timeOffRequest));
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+        if (userId == null)
+            throw new ArgumentNullException(); // TODO mesaj yaz
+
+        return Ok(await _timeOffService.UpdateAsync(timeOffRequest, userId));
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
-        return Ok(await _timeOffService.DeleteAsync(id));
+        await _timeOffService.DeleteAsync(id);
+
+        return NoContent();
     }
 }
 

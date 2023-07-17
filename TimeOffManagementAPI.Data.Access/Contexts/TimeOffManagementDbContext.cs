@@ -6,7 +6,7 @@ namespace TimeOffManagementAPI.Data.Access.Contexts;
 
 public class TimeOffManagementDBContext : IdentityDbContext<User>
 {
-    public DbSet<TimeOffRequest>? TimeOffRequests { get; set; }
+    public DbSet<TimeOff>? TimeOffs { get; set; }
 
     public TimeOffManagementDBContext(DbContextOptions<TimeOffManagementDBContext> options) : base(options)
     {

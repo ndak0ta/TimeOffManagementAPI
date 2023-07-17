@@ -44,6 +44,7 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetByEmailAsync(email));
     }
 
+    [Authorize(Roles = "Manager")]
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] UserRegistrationDto user)
     {
@@ -52,11 +53,11 @@ public class UserController : ControllerBase
 
     [HttpPut]
     public async Task<IActionResult> UpdateAsync([FromBody] User user)
-    { 
+    {
         return Ok(await _userService.UpdateAsync(user));
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
         return Ok(await _userService.DeleteAsync(id));

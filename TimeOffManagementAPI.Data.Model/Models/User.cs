@@ -7,6 +7,7 @@ public class User : IdentityUser
     public User()
     {
         AnnualTimeOffs = 14;
+        isActive = true;
     }
 
     public string? FirstName { get; set; }

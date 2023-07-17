@@ -27,6 +27,4 @@ public class UserRegistrationDto
     public DateTime? HireDate { get; init; }
 
     public string? PhoneNumber { get; init; }
-
-    public int? AnnualTimeOffs { get; init; }
 }

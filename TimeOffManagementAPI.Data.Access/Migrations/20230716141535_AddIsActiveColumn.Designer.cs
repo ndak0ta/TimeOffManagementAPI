@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeOffManagementAPI.Data.Access.Contexts;
 
@@ -11,9 +12,11 @@ using TimeOffManagementAPI.Data.Access.Contexts;
 namespace TimeOffManagementAPI.Data.Access.Migrations
 {
     [DbContext(typeof(TimeOffManagementDBContext))]
-    partial class TimeOffManagementDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230716141535_AddIsActiveColumn")]
+    partial class AddIsActiveColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +158,7 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.TimeOff", b =>
+            modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.TimeOffRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,9 +176,6 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("isApproved")
                         .HasColumnType("bit");
 
@@ -186,7 +186,7 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("TimeOffs");
+                    b.ToTable("TimeOffRequests");
                 });
 
             modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.User", b =>
@@ -323,7 +323,7 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.TimeOff", b =>
+            modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.TimeOffRequest", b =>
                 {
                     b.HasOne("TimeOffManagementAPI.Data.Model.Models.User", "User")
                         .WithMany()

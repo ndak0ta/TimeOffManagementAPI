@@ -15,19 +15,19 @@ public class TimeOffRepository : ITimeOffRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<TimeOffRequest>> GetAllAsync()
+    public async Task<IEnumerable<TimeOff>> GetAllAsync()
     {
-        if (_context.TimeOffRequests != null)
-            return await _context.TimeOffRequests.ToListAsync();
+        if (_context.TimeOffs != null)
+            return await _context.TimeOffs.ToListAsync();
         else
-            return Enumerable.Empty<TimeOffRequest>();
+            return Enumerable.Empty<TimeOff>();
     }
 
-    public async Task<TimeOffRequest> GetByIdAsync(int id)
+    public async Task<TimeOff> GetByIdAsync(int id)
     {
-        if (_context.TimeOffRequests != null)
+        if (_context.TimeOffs != null)
         {
-            var result = await _context.TimeOffRequests.FirstOrDefaultAsync(t => t.Id == id);
+            var result = await _context.TimeOffs.FirstOrDefaultAsync(t => t.Id == id);
 
             if (result == null)
                 throw new NotFoundException($"No time off request found with id {id}.");
@@ -38,11 +38,11 @@ public class TimeOffRepository : ITimeOffRepository
             throw new Exception("Internal server error.");
     }
 
-    public async Task<IEnumerable<TimeOffRequest>> GetByUserIdAsync(int userId)
+    public async Task<IEnumerable<TimeOff>> GetByUserIdAsync(string userId)
     {
-        if (_context.TimeOffRequests != null)
+        if (_context.TimeOffs != null)
         {
-            var result = await _context.TimeOffRequests.Where(t => t.userId == userId.ToString()).ToListAsync();
+            var result = await _context.TimeOffs.Where(t => t.userId == userId.ToString()).ToListAsync();
 
             if (result == null)
                 throw new NotFoundException($"No time off request found with id {userId}.");
@@ -51,14 +51,13 @@ public class TimeOffRepository : ITimeOffRepository
         }
         else
             throw new Exception("Internal server error.");
-
     }
 
-    public async Task<TimeOffRequest> CreateAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOff> CreateAsync(TimeOff TimeOff)
     {
-        if (_context.TimeOffRequests != null)
+        if (_context.TimeOffs != null)
         {
-            var result = await _context.TimeOffRequests.AddAsync(timeOffRequest);
+            var result = await _context.TimeOffs.AddAsync(TimeOff);
             await _context.SaveChangesAsync();
 
             return result.Entity;
@@ -67,11 +66,11 @@ public class TimeOffRepository : ITimeOffRepository
             throw new Exception("Internal server error.");
     }
 
-    public async Task<TimeOffRequest> UpdateAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOff> UpdateAsync(TimeOff TimeOff)
     {
-        if (_context.TimeOffRequests != null)
+        if (_context.TimeOffs != null)
         {
-            var result = _context.TimeOffRequests.Update(timeOffRequest);
+            var result = _context.TimeOffs.Update(TimeOff);
             await _context.SaveChangesAsync();
 
             return result.Entity;
@@ -80,14 +79,19 @@ public class TimeOffRepository : ITimeOffRepository
             throw new Exception("Internal server error.");
     }
 
-    public async Task<TimeOffRequest> DeleteAsync(TimeOffRequest timeOffRequest)
+    public async Task DeleteAsync(int id)
     {
-        if (_context.TimeOffRequests != null)
+        if (_context.TimeOffs != null)
         {
-            var result = _context.TimeOffRequests.Remove(timeOffRequest);
-            await _context.SaveChangesAsync();
+            var result = await _context.TimeOffs.FirstOrDefaultAsync(t => t.Id == id);
 
-            return result.Entity;
+            if (result == null)
+                throw new NotFoundException($"No time off request found with id {id}.");
+
+            result.isActive = false;
+
+            _context.TimeOffs.Update(result);
+            await _context.SaveChangesAsync();
         }
         else
             throw new Exception("Internal server error.");

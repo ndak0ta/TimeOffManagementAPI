@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimeOffManagementAPI.Data.Model.Models;
 
-public class TimeOffRequest
+public class TimeOff
 {
-    public TimeOffRequest()
+    public TimeOff()
     {
         isApproved = false;
     }
@@ -23,6 +23,8 @@ public class TimeOffRequest
     public DateTime EndDate { get; set; }
 
     public bool isApproved { get; set; }
+
+    public bool isActive { get; set; }
 
     [ForeignKey("User")]
     public string? userId { get; set; }

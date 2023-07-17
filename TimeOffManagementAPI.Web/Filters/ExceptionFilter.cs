@@ -35,7 +35,7 @@ public class ExceptionFilter : IExceptionFilter
         {
             error = context.Exception.Message,
             stackTrace = context.Exception.StackTrace,
-            // innerException = context.Exception.InnerException.Message
+            innerException = context.Exception.InnerException.Message ?? "No inner exception"
         });
 
         response.WriteAsync(result);
