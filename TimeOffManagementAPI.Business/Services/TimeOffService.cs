@@ -19,7 +19,20 @@ public class TimeOffService : ITimeOffService
 
     public async Task<IEnumerable<TimeOff>> GetAllAsync()
     {
-        return await _timeOffRepository.GetAllAsync();
+        var result = await _timeOffRepository.GetAllAsync();
+        return result.Where(t => t.IsActive);
+    }
+
+    public async Task<IEnumerable<TimeOff>> GetAllPasiveAsync()
+    {
+        var result = await _timeOffRepository.GetAllAsync();
+        return result.Where(t => !t.IsActive);
+    }
+
+    public async Task<IEnumerable<TimeOff>> GetAllPendingAsync()
+    {
+        var result = await _timeOffRepository.GetAllAsync();
+        return result.Where(t => t.IsActive && t.IsPending);
     }
 
     public async Task<TimeOff> GetByIdAsync(int id)
@@ -49,6 +62,17 @@ public class TimeOffService : ITimeOffService
     public async Task DeleteAsync(int id)
     {
         await _timeOffRepository.DeleteAsync(id);
+    }
+
+    public async Task<TimeOff> ApproveAsync(int id, bool isApproved)
+    {
+        var timeoff = await _timeOffRepository.GetByIdAsync(id);
+
+        timeoff.IsApproved = isApproved;
+
+        timeoff.IsPending = false;
+
+        return await _timeOffRepository.UpdateAsync(timeoff);
     }
 }
 

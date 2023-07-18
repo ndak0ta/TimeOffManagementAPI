@@ -3,9 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Dtos;
-using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Business.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -21,18 +19,25 @@ public class TimeOffController : ControllerBase
         _timeOffService = timeOffService;
     }
 
-    [Authorize(Roles = "Manager")]
+    [Authorize(Policy = "ManagerPolicy")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _timeOffService.GetAllAsync());
     }
 
-    [Authorize(Roles = "Manager")]
+    [Authorize(Policy = "ManagerPolicy")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _timeOffService.GetByIdAsync(id));
+    }
+
+    [Authorize(Policy = "ManagerPolicy")]
+    [HttpPatch("{id}/approve")]
+    public async Task<IActionResult> ApproveAsync(int id, bool isApproved)
+    {
+        return Ok(await _timeOffService.ApproveAsync(id, isApproved));
     }
 
     [HttpGet]
@@ -46,7 +51,7 @@ public class TimeOffController : ControllerBase
         return Ok(await _timeOffService.GetByUserIdAsync(userId));
     }
 
-    [Authorize(Roles = "Manager")]
+    [Authorize(Policy = "ManagerPolicy")]
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUserIdAsync(string userId)
     {

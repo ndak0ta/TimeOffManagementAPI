@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Models;
@@ -18,14 +19,25 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [Authorize(Roles = "Manager")]
     [HttpGet]
+    public async Task<IActionResult> GetByTokenAsync()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        return Ok(await _userService.GetByIdAsync(userId));
+    }
+
+    [Authorize(Policy = "ManagerPolicy")]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _userService.GetAllAsync());
     }
 
-    [Authorize(Roles = "Manager")]
+    [Authorize(Policy = "ManagerPolicy")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(string id)
     {
@@ -44,9 +56,9 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetByEmailAsync(email));
     }
 
-    [Authorize(Roles = "Manager")]
+    [Authorize(Policy = "ManagerPolicy")]
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] UserRegistrationDto user)
+    public async Task<IActionResult> CreateAsync([FromBody] UserRegistration user)
     {
         return Created("", await _userService.CreateAsync(user));
     }

@@ -2,8 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TimeOffManagementAPI.Data.Model.Dtos;
 
-public class UserLoginDto
+public class UserLogin
 {
+    public UserLogin()
+    {
+        RememberMe = false;
+    }
+
     [Required(ErrorMessage = "Username is required")]
     [MaxLength(255)]
     public string? Username { get; set; }
@@ -11,4 +16,6 @@ public class UserLoginDto
     [Required(ErrorMessage = "Password is required")]
     [MaxLength(255)]
     public string? Password { get; set; }
+
+    public bool RememberMe { get; set; }
 }

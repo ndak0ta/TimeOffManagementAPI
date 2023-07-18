@@ -34,8 +34,7 @@ public class ExceptionFilter : IExceptionFilter
         var result = JsonSerializer.Serialize(new
         {
             error = context.Exception.Message,
-            stackTrace = context.Exception.StackTrace,
-            innerException = context.Exception.InnerException.Message ?? "No inner exception"
+            stackTrace = context.Exception.StackTrace
         });
 
         response.WriteAsync(result);

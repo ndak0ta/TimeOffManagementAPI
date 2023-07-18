@@ -6,7 +6,7 @@ namespace TimeOffManagementAPI.Business.Interfaces
 {
     public interface IAuthService
     {
-        public Task<string> AuthenticateAsync(UserLoginDto userLogin);
-        public Task<IdentityResult> RegisterAsync(UserRegistrationDto userRegistration);
+        public Task<string> AuthenticateAsync(UserLogin userLogin);
+        public Task<IdentityResult> RegisterAsync(UserRegistration userRegistration);
     }
 }

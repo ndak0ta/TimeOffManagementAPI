@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TimeOffManagementAPI.Data.Model.Dtos;
 
-public class UserRegistrationDto
+public class UserRegistration
 {
     [Required(ErrorMessage = "Username is required")]
     public string? UserName { get; init; }

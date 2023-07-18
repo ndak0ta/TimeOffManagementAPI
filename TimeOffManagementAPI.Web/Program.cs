@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TimeOffManagementAPI.Web.Filters;
+using TimeOffManagementAPI.Web.Policies;
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Business.Services;
 using TimeOffManagementAPI.Data.Access.Contexts;
@@ -23,6 +24,7 @@ builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, relo
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddDbContext<TimeOffManagementDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("TimeOffManagementDBContext")));
 
@@ -59,7 +61,6 @@ builder.Services.AddIdentity<User, Role>(o =>
 builder.Services.AddTransient<ITimeOffRepository, TimeOffRepository>();
 builder.Services.AddTransient<ITimeOffService, TimeOffService>();
 
-builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -85,7 +86,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(option => {
+    option.AddPolicy("ManagerPolicy", policy => policy.Requirements.Add(new ManagerRoleRequirement()));
+});
 
 builder.Services.AddControllers();
 

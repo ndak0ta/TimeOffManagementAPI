@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Business.Interfaces;
-using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Data.Model.Dtos;
 
@@ -10,23 +9,16 @@ namespace TimeOffManagementAPI.Business.Services;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
 
-    public UserService(IUserRepository userRepository, IMapper mapper, UserManager<User> userManager)
+    public UserService(IMapper mapper, UserManager<User> userManager)
     {
-        _userRepository = userRepository;
         _mapper = mapper;
         _userManager = userManager;
     }
 
     public async Task<IEnumerable<User>> GetAllAsync()
-    {
-        return await _userManager.Users.ToListAsync();
-    }
-
-    public async Task<IEnumerable<User>> GetAllActiveAsync()
     {
         return await _userManager.Users.Where(u => u.isActive).ToListAsync();
     }
@@ -46,7 +38,12 @@ public class UserService : IUserService
         return await _userManager.FindByEmailAsync(email);
     }
 
-    public async Task<IdentityResult> CreateAsync(UserRegistrationDto userRegistration)
+    public async Task<IEnumerable<User>> GetByRoleAsync(string role)
+    {
+        return await _userManager.GetUsersInRoleAsync(role);
+    }
+
+    public async Task<IdentityResult> CreateAsync(UserRegistration userRegistration)
     {
         var user = _mapper.Map<User>(userRegistration);
 

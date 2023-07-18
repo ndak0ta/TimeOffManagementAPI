@@ -8,6 +8,9 @@ public class TimeOff
     public TimeOff()
     {
         IsApproved = false;
+        IsPending = true;
+        IsActive = true;
+        CreatedAt = DateTime.Now;
     }
 
     [Key]
@@ -24,7 +27,11 @@ public class TimeOff
 
     public bool IsApproved { get; set; }
 
+    public bool IsPending { get; set; }
+
     public bool IsActive { get; set; }
+
+    public DateTime CreatedAt { get; set; }
 
     [ForeignKey("User")]
     public string? UserId { get; set; }

@@ -12,4 +12,5 @@ public interface ITimeOffService
     public Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest);
     public Task<TimeOff> UpdateAsync(TimeOffRequest timeOffRequest);
     public Task DeleteAsync(int id);
+    public Task<TimeOff> ApproveAsync(int id, bool isApproved);
 }
