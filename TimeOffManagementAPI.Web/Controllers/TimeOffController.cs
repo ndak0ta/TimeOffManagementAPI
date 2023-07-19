@@ -86,7 +86,7 @@ public class TimeOffController : ControllerBase
     }
 
     [Authorize(Roles = "Manager")]
-    [HttpPatch("{id}/approve")]
+    [HttpPost("{id}/approve")]
     public async Task<IActionResult> ApproveAsync(int id, bool isApproved)
     {
         return Ok(await _timeOffService.ApproveAsync(id, isApproved));

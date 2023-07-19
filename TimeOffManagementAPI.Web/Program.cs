@@ -62,8 +62,6 @@ builder.Services.AddIdentity<User, Role>(o =>
 builder.Services.AddTransient<ITimeOffRepository, TimeOffRepository>();
 builder.Services.AddTransient<ITimeOffService, TimeOffService>();
 
-builder.Services.AddTransient<IRoleService, RoleService>();
-
 builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
