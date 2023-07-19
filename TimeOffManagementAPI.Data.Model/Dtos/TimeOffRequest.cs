@@ -4,6 +4,11 @@ namespace TimeOffManagementAPI.Data.Model.Dtos;
 
 public class TimeOffRequest
 {
+    public TimeOffRequest()
+    {
+        TotalDays = (EndDate - StartDate).Days;
+    }
+
 
     [MaxLength(255)]
     public string? Description { get; set; }
@@ -13,6 +18,8 @@ public class TimeOffRequest
 
     [Required]
     public DateTime EndDate { get; set; }
+
+    public int TotalDays { get; set; }
 
     [Required]
     public string? UserId { get; set; }

@@ -11,6 +11,7 @@ public class TimeOff
         IsPending = true;
         IsActive = true;
         CreatedAt = DateTime.Now;
+        TotalDays = (EndDate - StartDate).Days;
     }
 
     [Key]
@@ -24,6 +25,8 @@ public class TimeOff
 
     [Required]
     public DateTime EndDate { get; set; }
+
+    public int TotalDays { get; set; }
 
     public bool IsApproved { get; set; }
 

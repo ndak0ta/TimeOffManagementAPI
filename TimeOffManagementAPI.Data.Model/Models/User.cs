@@ -22,4 +22,6 @@ public class User : IdentityUser
     public int AnnualTimeOffs { get; set; }
 
     public bool isActive { get; set; }
+
+    public ICollection<TimeOff>? TimeOffs { get; set; }
 }

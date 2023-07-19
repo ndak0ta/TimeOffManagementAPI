@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,8 @@ builder.Services.AddIdentity<User, Role>(o =>
 builder.Services.AddTransient<ITimeOffRepository, TimeOffRepository>();
 builder.Services.AddTransient<ITimeOffService, TimeOffService>();
 
+builder.Services.AddTransient<IRoleService, RoleService>();
+
 builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -86,9 +89,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization(option => {
-    option.AddPolicy("ManagerPolicy", policy => policy.Requirements.Add(new ManagerRoleRequirement()));
-});
+builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<IAuthorizationHandler, ManagerRoleHandler>();
 
 builder.Services.AddControllers();
 

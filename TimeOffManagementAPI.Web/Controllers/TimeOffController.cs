@@ -19,25 +19,18 @@ public class TimeOffController : ControllerBase
         _timeOffService = timeOffService;
     }
 
-    [Authorize(Policy = "ManagerPolicy")]
+    [Authorize(Roles = "Manager")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _timeOffService.GetAllAsync());
     }
 
-    [Authorize(Policy = "ManagerPolicy")]
+    [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         return Ok(await _timeOffService.GetByIdAsync(id));
-    }
-
-    [Authorize(Policy = "ManagerPolicy")]
-    [HttpPatch("{id}/approve")]
-    public async Task<IActionResult> ApproveAsync(int id, bool isApproved)
-    {
-        return Ok(await _timeOffService.ApproveAsync(id, isApproved));
     }
 
     [HttpGet]
@@ -51,7 +44,7 @@ public class TimeOffController : ControllerBase
         return Ok(await _timeOffService.GetByUserIdAsync(userId));
     }
 
-    [Authorize(Policy = "ManagerPolicy")]
+    [Authorize(Roles = "Manager")]
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUserIdAsync(string userId)
     {
@@ -90,6 +83,13 @@ public class TimeOffController : ControllerBase
         await _timeOffService.DeleteAsync(id);
 
         return NoContent();
+    }
+
+    [Authorize(Roles = "Manager")]
+    [HttpPatch("{id}/approve")]
+    public async Task<IActionResult> ApproveAsync(int id, bool isApproved)
+    {
+        return Ok(await _timeOffService.ApproveAsync(id, isApproved));
     }
 }
 

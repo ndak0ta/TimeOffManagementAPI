@@ -4,6 +4,11 @@ namespace TimeOffManagementAPI.Data.Model.Dtos;
 
 public class UserRegistration
 {
+    public UserRegistration()
+    {
+        HireDate = DateTime.Now;
+    }
+
     [Required(ErrorMessage = "Username is required")]
     public string? UserName { get; init; }
 
@@ -21,9 +26,9 @@ public class UserRegistration
     [Required(ErrorMessage = "Last name is required")]
     public string? LastName { get; init; }
 
+    [Required(ErrorMessage = "Birth date is required")]
     public DateTime? DateOfBirth { get; init; }
 
-    [Required(ErrorMessage = "Employment date is required")]
     public DateTime? HireDate { get; init; }
 
     public string? PhoneNumber { get; init; }

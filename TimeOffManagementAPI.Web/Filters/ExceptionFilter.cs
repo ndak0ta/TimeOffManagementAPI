@@ -26,6 +26,9 @@ public class ExceptionFilter : IExceptionFilter
             case UnauthorizedAccessException:
                 response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 break;
+            case UnprocessableEntityException:
+                response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
+                break;
             default:
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 break;

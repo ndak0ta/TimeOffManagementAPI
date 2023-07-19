@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeOffManagementAPI.Data.Access.Contexts;
 
@@ -11,9 +12,11 @@ using TimeOffManagementAPI.Data.Access.Contexts;
 namespace TimeOffManagementAPI.Data.Access.Migrations
 {
     [DbContext(typeof(TimeOffManagementDBContext))]
-    partial class TimeOffManagementDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230718161807_IsActiveColumnAddedToRoles")]
+    partial class IsActiveColumnAddedToRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,9 +191,6 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TotalDays")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -338,15 +338,10 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
             modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.TimeOff", b =>
                 {
                     b.HasOne("TimeOffManagementAPI.Data.Model.Models.User", "User")
-                        .WithMany("TimeOffs")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.User", b =>
-                {
-                    b.Navigation("TimeOffs");
                 });
 #pragma warning restore 612, 618
         }

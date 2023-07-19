@@ -12,7 +12,9 @@ namespace TimeOffManagementAPI.Business.Interfaces
         public Task<User> GetByUsernameAsync(string username);
         public Task<User> GetByEmailAsync(string email);
         public Task<IdentityResult> CreateAsync(UserRegistration user);
-        public Task<IdentityResult> UpdateAsync(User user);
+        public Task<IdentityResult> UpdateAsync(UserUpdate user);
         public Task<IdentityResult> DeleteAsync(string id);
+        public Task<IdentityResult> ChangePasswordAsync(UserChangePassword user);
+        public Task<int> TimeOffLeftAsync(string userId);
     }
 }

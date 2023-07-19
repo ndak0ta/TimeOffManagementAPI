@@ -8,12 +8,10 @@ namespace TimeOffManagementAPI.Business.Services;
 public class RoleService : IRoleService
 {
     private readonly RoleManager<Role> _roleManager;
-    private readonly UserManager<User> _userManager;
 
-    public RoleService(RoleManager<Role> roleRepository, UserManager<User> userManager)
+    public RoleService(RoleManager<Role> roleRepository)
     {
         _roleManager = roleRepository;
-        _userManager = userManager;
     }
 
     public async Task<IEnumerable<Role>> GetAllAsync()
@@ -31,6 +29,7 @@ public class RoleService : IRoleService
         return await _roleManager.FindByNameAsync(name);
     }
 
+    /* Şimdilik devre dışı
     public async Task<IdentityResult> CreateAsync(Role role)
     {
         return await _roleManager.CreateAsync(role);
@@ -48,19 +47,14 @@ public class RoleService : IRoleService
         return await _roleManager.DeleteAsync(role);
     }
 
-    public async Task<IdentityResult> DisableAsync(string id)
+
+    public async Task<IdentityResult> ToggleDisableAsync(string id)
     {
         var role = await _roleManager.FindByIdAsync(id);
 
-        role.IsActive = false; // TODO deaktif edildğinde rolün devra dışı kalmasını sağla
+        role.IsActive = !role.IsActive;
 
         return await _roleManager.UpdateAsync(role);
     }
-
-    public async Task<IdentityResult> AddUserToRoleAsync(int userId, string roleName)
-    {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-
-        return await _userManager.AddToRoleAsync(user, roleName);
-    }
+    */
 }

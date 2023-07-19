@@ -30,14 +30,14 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetByIdAsync(userId));
     }
 
-    [Authorize(Policy = "ManagerPolicy")]
+    [Authorize(Roles = "Manager")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _userService.GetAllAsync());
     }
 
-    [Authorize(Policy = "ManagerPolicy")]
+    [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(string id)
     {
@@ -56,7 +56,7 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetByEmailAsync(email));
     }
 
-    [Authorize(Policy = "ManagerPolicy")]
+    [Authorize(Roles = "Manager")]
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] UserRegistration user)
     {
@@ -64,7 +64,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] User user)
+    public async Task<IActionResult> UpdateAsync([FromBody] UserUpdate user)
     {
         return Ok(await _userService.UpdateAsync(user));
     }
@@ -73,5 +73,11 @@ public class UserController : ControllerBase
     public async Task<IActionResult> DeleteAsync(string id)
     {
         return Ok(await _userService.DeleteAsync(id));
+    }
+
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword changePassword)
+    {
+        return Ok(await _userService.ChangePasswordAsync(changePassword));
     }
 }
