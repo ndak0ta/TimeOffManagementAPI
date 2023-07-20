@@ -80,4 +80,11 @@ public class UserController : ControllerBase
     {
         return Ok(await _userService.ChangePasswordAsync(changePassword));
     }
+
+    [HttpPost("{id}/set-annual-time-off")]
+    public async Task<IActionResult> SetAnnualTimeOffAsync([FromBody] string id, int newAnnualTimeOff)
+    {
+        return Ok(await _userService.SetAnnualTimeOffAsync(id, newAnnualTimeOff));
+    }
+
 }

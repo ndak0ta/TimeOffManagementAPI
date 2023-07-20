@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TimeOffManagementAPI.Web.Filters;
 using TimeOffManagementAPI.Web.Policies;
+using TimeOffManagementAPI.BackgroundServices;
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Business.Services;
 using TimeOffManagementAPI.Data.Access.Contexts;
@@ -123,6 +124,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+builder.Services.AddHostedService<AnnualTimeOffBackgroundService>();
 
 var app = builder.Build();
 

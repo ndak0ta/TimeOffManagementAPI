@@ -117,4 +117,37 @@ public class UserService : IUserService
 
         return timeOffLeft;
     }
+
+    public async Task<IdentityResult> SetAnnualTimeOffAsync(string userId, int annualTimeOff)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        user.AnnualTimeOffs = annualTimeOff;
+
+        user.AutomaticAnnualTimeOffIncrement = false;
+
+        return await _userManager.UpdateAsync(user);
+    }
+
+    public async Task UpdateAnnualTimeOffAsync()
+    {
+        var users = await _userManager.Users.ToListAsync();
+
+        foreach (var user in users)
+        {
+            if (!user.AutomaticAnnualTimeOffIncrement)
+                continue;
+
+            decimal workYear = (DateTime.Now - user.HireDate).Days / 365;
+
+            if (workYear > 15)
+                user.AnnualTimeOffs = 26;
+            else if (workYear > 5)
+                user.AnnualTimeOffs = 20;
+            else if (workYear > 1)
+                user.AnnualTimeOffs = 14;
+
+            await _userManager.UpdateAsync(user);
+        }
+    }
 }

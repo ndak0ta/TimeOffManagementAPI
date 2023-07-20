@@ -31,5 +31,6 @@
     <ProjectReference Include="..\TimeOffManagementAPI.Exceptions\TimeOffManagementAPI.Exceptions.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\TimeOffManagementAPI.BackgroundServices\TimeOffManagementAPI.BackgroundServices.csproj" />
   </ItemGroup>
 </Project>

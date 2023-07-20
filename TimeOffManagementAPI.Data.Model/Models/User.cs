@@ -6,9 +6,10 @@ public class User : IdentityUser
 {
     public User()
     {
-        AnnualTimeOffs = 14;
+        AnnualTimeOffs = 0;
         isActive = true;
         LockoutEnd = DateTime.Now + TimeSpan.FromMinutes(5); // TODO sonra revize et
+        AutomaticAnnualTimeOffIncrement = true;
     }
 
     public string? FirstName { get; set; }
@@ -20,6 +21,8 @@ public class User : IdentityUser
     public DateTime HireDate { get; set; }
 
     public int AnnualTimeOffs { get; set; }
+
+    public bool AutomaticAnnualTimeOffIncrement { get; set; }
 
     public bool isActive { get; set; }
 
