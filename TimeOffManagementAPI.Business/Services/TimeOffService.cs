@@ -65,9 +65,7 @@ public class TimeOffService : ITimeOffService
 
         var user = await _userService.GetByIdAsync(timeoff.UserId);
 
-        var timeOffLeft = await _userService.TimeOffLeftAsync(user.Id);
-
-        if (timeoff.TotalDays > timeOffLeft)
+        if (timeoff.TotalDays > user.RemainingAnnualTimeOffs)
             throw new UnprocessableEntityException("You don't have enough time off left");
 
         return await _timeOffRepository.CreateAsync(timeoff);
@@ -93,7 +91,15 @@ public class TimeOffService : ITimeOffService
 
         timeoff.IsPending = false;
 
-        return await _timeOffRepository.UpdateAsync(timeoff);
+        var result = await _timeOffRepository.UpdateAsync(timeoff);
+
+        if (timeoff.UserId == null)
+            throw new NullReferenceException("User id is missing");
+
+        if (result.IsApproved)
+            await _userService.UpdateRemaningAnnualTimeOff(timeoff.UserId);
+
+        return result;
     }
 }
 

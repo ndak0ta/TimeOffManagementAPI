@@ -1,21 +1,19 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using TimeOffManagementAPI.Business.Interfaces;
 
-namespace TimeOffManagementAPI.BackgroundServices;
+namespace TimeOffManagementAPI.Business.BackgroundServices;
 
-public class AnnualTimeOffBackgroundService : BackgroundService
+public class AnnualTimeOffBackgroundService : BackgroundService, IDisposable
 {
     private readonly ILogger<AnnualTimeOffBackgroundService> _logger;
-    private readonly IUserService _userService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public AnnualTimeOffBackgroundService(ILogger<AnnualTimeOffBackgroundService> logger, IUserService userService)
+    public AnnualTimeOffBackgroundService(ILogger<AnnualTimeOffBackgroundService> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _userService = userService;
+        _serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,7 +26,12 @@ public class AnnualTimeOffBackgroundService : BackgroundService
         {
             _logger.LogInformation($"AnnualTimeOffBackgroundService task doing background work.");
 
-            await _userService.UpdateAnnualTimeOffAsync();
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+                await userService.UpdateAnnualTimeOffAsync();
+            }
 
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }

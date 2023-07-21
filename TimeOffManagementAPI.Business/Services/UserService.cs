@@ -76,6 +76,11 @@ public class UserService : IUserService
         return await _userManager.UpdateAsync(user);
     }
 
+    public async Task<IdentityResult> HardUpdate(User user)
+    {
+        return await _userManager.UpdateAsync(user);
+    }
+
     public async Task<IdentityResult> AddUserToRoleAsync(string userId, string roleName)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -93,7 +98,7 @@ public class UserService : IUserService
         return await _userManager.ChangePasswordAsync(user, userChangePassword.OldPassword, userChangePassword.NewPassword);
     }
 
-    public async Task<int> TimeOffLeftAsync(string userId)
+    public async Task<IdentityResult> UpdateRemaningAnnualTimeOff(string userId) // TODO değer geri döndürmeden direkt dbye kaydet
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -102,10 +107,10 @@ public class UserService : IUserService
         var userWithTimeOffs = await _userManager.Users.Include(u => u.TimeOffs).FirstOrDefaultAsync(u => u.Id == userId);
 
         if (userWithTimeOffs == null)
-            return timeOffLeft;
+            throw new NullReferenceException("User not found");
 
         if (userWithTimeOffs.TimeOffs == null)
-            return timeOffLeft;
+            return IdentityResult.Success;
 
         foreach (var timeOff in userWithTimeOffs.TimeOffs)
         {
@@ -115,7 +120,9 @@ public class UserService : IUserService
             }
         }
 
-        return timeOffLeft;
+        user.RemainingAnnualTimeOffs = timeOffLeft;
+
+        return await _userManager.UpdateAsync(user);
     }
 
     public async Task<IdentityResult> SetAnnualTimeOffAsync(string userId, int annualTimeOff)

@@ -1,14 +1,12 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TimeOffManagementAPI.Web.Filters;
-using TimeOffManagementAPI.Web.Policies;
-using TimeOffManagementAPI.BackgroundServices;
+using TimeOffManagementAPI.Business.BackgroundServices;
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Business.Services;
 using TimeOffManagementAPI.Data.Access.Contexts;
@@ -56,16 +54,18 @@ builder.Services.AddIdentity<User, Role>(o =>
     o.Password.RequireNonAlphanumeric = false;
     o.Password.RequiredLength = 6;
     o.User.RequireUniqueEmail = true;
+    o.Lockout.MaxFailedAccessAttempts = 5;
+    o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 })
 .AddEntityFrameworkStores<TimeOffManagementDBContext>()
 .AddDefaultTokenProviders();
 
-builder.Services.AddTransient<ITimeOffRepository, TimeOffRepository>();
-builder.Services.AddTransient<ITimeOffService, TimeOffService>();
+builder.Services.AddScoped<ITimeOffRepository, TimeOffRepository>();
+builder.Services.AddScoped<ITimeOffService, TimeOffService>();
 
-builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -89,8 +89,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-
-builder.Services.AddScoped<IAuthorizationHandler, ManagerRoleHandler>();
 
 builder.Services.AddControllers();
 

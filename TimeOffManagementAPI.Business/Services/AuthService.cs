@@ -47,22 +47,29 @@ public class AuthService : IAuthService
             await _userManager.ResetAccessFailedCountAsync(user);
             await _userManager.SetLockoutEndDateAsync(user, null);
         }
-        else if (result.IsLockedOut) // TODO birkaç sefer sonra locked out edecek şekilde ayarla
+        else if (result.IsLockedOut)
         {
+            if (DateTimeOffset.UtcNow < await _userManager.GetLockoutEndDateAsync(user))
+            {
+                var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
+                var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
+                throw new ArgumentException($"Your account is locked out. Please try again {timeLeft} minutes later.");
+            }
+
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddMinutes(5));
-            var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
-            var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
-            throw new ArgumentException($"Your account is locked out. Please try again {timeLeft} minutes later.");
         }
         else
+        {
+            await _userManager.AccessFailedAsync(user);
             throw new ArgumentException("Username or password is incorrect.");
+        }
 
         return GenerateAccessToken(user);
     }
 
     public async Task<IdentityResult> RegisterAsync(UserRegistration userRegistration)
     {
-        return await _userService.CreateAsync(userRegistration); // TODO Identity'nin kendi metodlarını kullan
+        return await _userService.CreateAsync(userRegistration);
     }
 
     private string GenerateAccessToken(User user)
