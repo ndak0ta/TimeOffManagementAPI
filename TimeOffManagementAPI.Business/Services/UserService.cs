@@ -98,7 +98,7 @@ public class UserService : IUserService
         return await _userManager.ChangePasswordAsync(user, userChangePassword.OldPassword, userChangePassword.NewPassword);
     }
 
-    public async Task<IdentityResult> UpdateRemaningAnnualTimeOff(string userId) // TODO değer geri döndürmeden direkt dbye kaydet
+    public async Task<IdentityResult> UpdateRemaningAnnualTimeOff(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 

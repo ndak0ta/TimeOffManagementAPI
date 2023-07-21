@@ -12,12 +12,14 @@ public class TimeOffService : ITimeOffService
     public readonly ITimeOffRepository _timeOffRepository;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
+    private readonly IEmailService _emailService;
 
-    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService)
+    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService)
     {
         _timeOffRepository = timeOffRepository;
         _mapper = mapper;
         _userService = userService;
+        _emailService = emailService;
     }
 
     public async Task<IEnumerable<TimeOff>> GetAllAsync()
@@ -52,7 +54,7 @@ public class TimeOffService : ITimeOffService
     {
         var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
 
-        if (timeoff.StartDate.Year == DateTime.UtcNow.Year && timeoff.EndDate.Year == DateTime.UtcNow.Year)
+        if (!(timeoff.StartDate.Year == DateTime.UtcNow.Year && timeoff.EndDate.Year == DateTime.UtcNow.Year))
             throw new ArgumentException("Start date and end date must be in the same year");
 
         timeoff.TotalDays = (timeoff.EndDate - timeoff.StartDate).Days;
@@ -97,7 +99,16 @@ public class TimeOffService : ITimeOffService
             throw new NullReferenceException("User id is missing");
 
         if (result.IsApproved)
+        {
             await _userService.UpdateRemaningAnnualTimeOff(timeoff.UserId);
+            var user = await _userService.GetByIdAsync(timeoff.UserId);
+            await _emailService.SendEmaiAsync(user.Email, "Time off request approved", $"Your time off request from {timeoff.StartDate} to {timeoff.EndDate} has been approved.");
+        }
+        else if (!result.IsApproved)
+        {
+            var user = await _userService.GetByIdAsync(timeoff.UserId);
+            await _emailService.SendEmaiAsync(user.Email, "Time off request rejected", $"Your time off request from {timeoff.StartDate} to {timeoff.EndDate} has been rejected.");
+        }
 
         return result;
     }

@@ -9,7 +9,6 @@ public class User : IdentityUser
         AnnualTimeOffs = 0;
         RemainingAnnualTimeOffs = AnnualTimeOffs;
         isActive = true;
-        LockoutEnd = DateTime.Now + TimeSpan.FromMinutes(5); // TODO sonra revize et
         AutomaticAnnualTimeOffIncrement = true;
     }
 

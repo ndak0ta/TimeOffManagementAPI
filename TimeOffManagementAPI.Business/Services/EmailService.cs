@@ -1,10 +1,11 @@
 using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
+using TimeOffManagementAPI.Business.Interfaces;
 
-namespace YourNamespace.Services;
+namespace TimeOffManagementAPI.Business.Services;
 
-public class EmailService
+public class EmailService : IEmailService
 {
     private readonly IConfiguration _configuration;
 
@@ -13,7 +14,7 @@ public class EmailService
         _configuration = configuration;
     }
 
-    public void SendEmail(string recipient, string subject, string body) // TODO test et
+    public async Task SendEmaiAsync(string recipient, string subject, string body) // TODO html tasarım ayarla
     {
         string? fromAddress = _configuration["EmailSettings:FromAddress"];
         string? smtpServer = _configuration["EmailSettings:SmtpServer"];
@@ -48,7 +49,7 @@ public class EmailService
             var message = new MailMessage(fromAddress, recipient, subject, body);
             message.IsBodyHtml = true;
 
-            client.Send(message);
+            await client.SendMailAsync(message);
         }
     }
 }
