@@ -19,7 +19,7 @@ public class TimeOffRequest
     [Required]
     public DateTime EndDate { get; set; }
 
-    public int TotalDays { get; set; }
+    public int TotalDays { get; set; } // TODO silinebilir
 
     [Required]
     public string? UserId { get; set; }

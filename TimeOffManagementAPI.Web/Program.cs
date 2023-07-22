@@ -70,6 +70,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
+builder.Services.AddScoped<IHolidayService, HolidayService>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -127,6 +130,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddHostedService<AnnualTimeOffBackgroundService>();
+builder.Services.AddHostedService<HolidayBackgroundService>();
+
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

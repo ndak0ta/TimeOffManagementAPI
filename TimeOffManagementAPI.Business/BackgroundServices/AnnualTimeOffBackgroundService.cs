@@ -5,7 +5,7 @@ using TimeOffManagementAPI.Business.Interfaces;
 
 namespace TimeOffManagementAPI.Business.BackgroundServices;
 
-public class AnnualTimeOffBackgroundService : BackgroundService, IDisposable
+public class AnnualTimeOffBackgroundService : BackgroundService
 {
     private readonly ILogger<AnnualTimeOffBackgroundService> _logger;
     private readonly IServiceProvider _serviceProvider;
