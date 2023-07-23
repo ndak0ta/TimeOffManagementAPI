@@ -13,13 +13,15 @@ public class TimeOffService : ITimeOffService
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
+    private readonly ICalendarService _calendarService;
 
-    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService)
+    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService)
     {
         _timeOffRepository = timeOffRepository;
         _mapper = mapper;
         _userService = userService;
         _emailService = emailService;
+        _calendarService = calendarService;
     }
 
     public async Task<IEnumerable<TimeOff>> GetAllAsync()
@@ -117,11 +119,16 @@ public class TimeOffService : ITimeOffService
     {
         int totalDays = 0;
 
+        List<DateTime> eidAlFitrDates = _calendarService.GetEidAlFitrDates();
+        List<DateTime> eidAlAdhaDates = _calendarService.GetEidAlAdhaDates();
+        List<DateTime> publicHolidays = _calendarService.GetPublicHolidays();
+
         for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
         {
             if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)
             {
-                totalDays++;
+                if (!(eidAlFitrDates.Contains(date) || eidAlAdhaDates.Contains(date) || publicHolidays.Contains(date)))
+                    totalDays++;
             }
         }
 

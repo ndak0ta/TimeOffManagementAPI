@@ -1,100 +1,94 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Exceptions;
 
-namespace TimeOffManagementAPI.Data.Access.Abstractions;
-
-public abstract class BaseRepository<TEntity> where TEntity : class
+namespace TimeOffManagementAPI.Data.Access.Abstractions
 {
-    private readonly TimeOffManagementDBContext _context;
-
-    public BaseRepository(TimeOffManagementDBContext context)
+    public abstract class BaseRepository<TEntity> where TEntity : class
     {
-        _context = context;
-    }
+        private readonly TimeOffManagementDBContext _context;
 
-    private DbSet<TEntity> DbSet => _context.Set<TEntity>();
-
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
-    {
-        if (DbSet != null)
-            return await DbSet.ToListAsync();
-        else
-            return Enumerable.Empty<TEntity>();
-    }
-
-    public async Task<TEntity> GetByIdAsync(int id)
-    {
-        if (DbSet != null)
+        public BaseRepository(TimeOffManagementDBContext context)
         {
-            var result = await DbSet.FindAsync(id);
-
-            if (result == null)
-                throw new NotFoundException($"No entity found with id {id}.");
-
-            return result;
+            _context = context;
         }
-        else
-            throw new Exception("Internal server error.");
-    }
 
-    public async Task<IEnumerable<TEntity>> GetByPropertyAsync(Func<TEntity, bool> predicate)
-    {
-        if (DbSet != null)
+        private DbSet<TEntity> DbSet => _context.Set<TEntity>();
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            var result = await _context.Set<TEntity>().ToListAsync();
-
-            result = result.Where(predicate).ToList(); // TODO sonra hallet
-
-            if (result == null || !result.Any())
+            if (DbSet != null)
+                return await DbSet.AsNoTracking().ToListAsync();
+            else
                 return Enumerable.Empty<TEntity>();
-
-            return result;
         }
-        else
-            throw new Exception("Internal server error.");
-    }
 
-    public async Task<TEntity> CreateAsync(TEntity entity)
-    {
-        if (DbSet != null)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
-            var result = await DbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            if (DbSet != null)
+            {
+                var result = await DbSet.FindAsync(id);
 
-            return result.Entity;
+                if (result == null)
+                    throw new NotFoundException($"No entity found with id {id}.");
+
+                return result;
+            }
+            else
+                throw new Exception("Internal server error.");
         }
-        else
-            throw new Exception("Internal server error.");
-    }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity)
-    {
-        if (DbSet != null)
+        public async Task<IEnumerable<TEntity>> GetByPropertyAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            var result = DbSet.Update(entity);
-            await _context.SaveChangesAsync();
-
-            return result.Entity;
+            if (DbSet != null)
+            {
+                return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
+            }
+            else
+                throw new Exception("Internal server error.");
         }
-        else
-            throw new Exception("Internal server error.");
-    }
 
-    public async Task DeleteAsync(int id)
-    {
-        if (DbSet != null)
+        public async Task<TEntity> CreateAsync(TEntity entity)
         {
-            var result = await DbSet.FindAsync(id);
+            if (DbSet != null)
+            {
+                var result = await DbSet.AddAsync(entity);
+                await _context.SaveChangesAsync();
 
-            if (result == null)
-                throw new NotFoundException($"No entity found with id {id}.");
-
-            _context.Entry(result).State = EntityState.Deleted;
-            await _context.SaveChangesAsync();
+                return result.Entity;
+            }
+            else
+                throw new Exception("Internal server error.");
         }
-        else
-            throw new Exception("Internal server error.");
+
+        public async Task<TEntity> UpdateAsync(TEntity entity)
+        {
+            if (DbSet != null)
+            {
+                var result = DbSet.Update(entity);
+                await _context.SaveChangesAsync();
+
+                return result.Entity;
+            }
+            else
+                throw new Exception("Internal server error.");
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            if (DbSet != null)
+            {
+                var result = await DbSet.FindAsync(id);
+
+                if (result == null)
+                    throw new NotFoundException($"No entity found with id {id}.");
+
+                _context.Entry(result).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
+            }
+            else
+                throw new Exception("Internal server error.");
+        }
     }
 }
-

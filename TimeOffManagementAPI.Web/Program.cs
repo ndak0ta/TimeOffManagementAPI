@@ -70,8 +70,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
-builder.Services.AddScoped<IHolidayService, HolidayService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -130,7 +129,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddHostedService<AnnualTimeOffBackgroundService>();
-builder.Services.AddHostedService<HolidayBackgroundService>();
 
 builder.Services.AddHttpClient();
 
