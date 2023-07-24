@@ -32,22 +32,22 @@ public class AuthService : IAuthService
         if (userLogin == null)
             throw new ArgumentNullException(nameof(userLogin)); // TODO exception mesajlarını değiştir
 
-        if (string.IsNullOrWhiteSpace(userLogin.Username))
-            throw new ArgumentNullException(nameof(userLogin.Username));
+        if (string.IsNullOrWhiteSpace(userLogin.UserName))
+            throw new ArgumentNullException(nameof(userLogin.UserName));
 
         if (string.IsNullOrWhiteSpace(userLogin.Password))
             throw new ArgumentNullException(nameof(userLogin.Password));
 
-        var user = await _userService.GetByUsernameAsync(userLogin.Username);
+        var user = await _userService.GetByUsernameAsync(userLogin.UserName);
 
-        var result = await _signInManager.PasswordSignInAsync(user, userLogin.Password, userLogin.RememberMe, true);
+        var result = await _signInManager.PasswordSignInAsync(user, userLogin.Password, false, true);
 
         if (result.Succeeded)
         {
             await _userManager.ResetAccessFailedCountAsync(user);
             await _userManager.SetLockoutEndDateAsync(user, null);
         }
-        else if (result.IsLockedOut)
+        else if (result.IsLockedOut) // TODO revize et
         {
             if (DateTimeOffset.UtcNow < await _userManager.GetLockoutEndDateAsync(user))
             {
@@ -55,8 +55,6 @@ public class AuthService : IAuthService
                 var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
                 throw new ArgumentException($"Your account is locked out. Please try again {timeLeft} minutes later.");
             }
-
-            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddMinutes(5));
         }
         else
         {
