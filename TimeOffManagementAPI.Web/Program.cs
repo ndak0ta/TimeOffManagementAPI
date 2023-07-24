@@ -46,7 +46,6 @@ var mapperConfig = new MapperConfiguration(map =>
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
-
 builder.Services.AddIdentity<User, Role>(o =>
 {
     o.Password.RequireDigit = false;
@@ -132,6 +131,16 @@ builder.Services.AddHostedService<AnnualTimeOffBackgroundService>();
 
 builder.Services.AddHttpClient();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -147,6 +156,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();
 

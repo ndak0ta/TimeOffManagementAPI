@@ -59,7 +59,7 @@ public class TimeOffService : ITimeOffService
         if (!(timeoff.StartDate.Year == DateTime.UtcNow.Year && timeoff.EndDate.Year == DateTime.UtcNow.Year))
             throw new ArgumentException("Start date and end date must be in the same year");
 
-        timeoff.TotalDays = CountDaysExcludingWeekends(timeoff.StartDate, timeoff.EndDate);
+        timeoff.TotalDays = CountDaysExcludingHolidays(timeoff.StartDate, timeoff.EndDate);
 
         if (timeoff.UserId == null)
             throw new ArgumentException("User id is required");
@@ -115,7 +115,7 @@ public class TimeOffService : ITimeOffService
         return result;
     }
 
-    private int CountDaysExcludingWeekends(DateTime startDate, DateTime endDate)
+    private int CountDaysExcludingHolidays(DateTime startDate, DateTime endDate)
     {
         int totalDays = 0;
 

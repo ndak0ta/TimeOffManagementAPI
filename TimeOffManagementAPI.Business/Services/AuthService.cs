@@ -47,14 +47,11 @@ public class AuthService : IAuthService
             await _userManager.ResetAccessFailedCountAsync(user);
             await _userManager.SetLockoutEndDateAsync(user, null);
         }
-        else if (result.IsLockedOut) // TODO revize et
+        else if (result.IsLockedOut)
         {
-            if (DateTimeOffset.UtcNow < await _userManager.GetLockoutEndDateAsync(user))
-            {
-                var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
-                var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
-                throw new ArgumentException($"Your account is locked out. Please try again {timeLeft} minutes later.");
-            }
+            var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
+            var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
+            throw new ArgumentException($"Your account is locked out. Please try again {timeLeft} minutes later.");
         }
         else
         {
