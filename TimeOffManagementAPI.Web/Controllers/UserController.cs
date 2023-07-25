@@ -78,10 +78,17 @@ public class UserController : ControllerBase
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword changePassword)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        changePassword.Id = userId;
+
         return Ok(await _userService.ChangePasswordAsync(changePassword));
     }
 
-    [HttpPost("{id}/set-annual-time-off")]
+    [HttpPost("{id}/set-annual")]
     public async Task<IActionResult> SetAnnualTimeOffAsync([FromBody] string id, int newAnnualTimeOff)
     {
         return Ok(await _userService.SetAnnualTimeOffAsync(id, newAnnualTimeOff));

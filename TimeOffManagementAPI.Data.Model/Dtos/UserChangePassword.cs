@@ -4,7 +4,7 @@ namespace TimeOffManagementAPI.Data.Model.Dtos;
 
 public class UserChangePassword
 {
-    public string? Id { get; init; }
+    public string? Id { get; set; }
 
     [Required(ErrorMessage = "Old password is required")]
     public string? OldPassword { get; init; }

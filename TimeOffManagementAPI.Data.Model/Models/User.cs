@@ -22,6 +22,8 @@ public class User : IdentityUser
 
     public int AnnualTimeOffs { get; set; }
 
+    public int Address { get; set; }
+
     public int RemainingAnnualTimeOffs { get; set; }
 
     public bool AutomaticAnnualTimeOffIncrement { get; set; }

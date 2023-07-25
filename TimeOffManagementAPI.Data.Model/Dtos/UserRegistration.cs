@@ -32,4 +32,6 @@ public class UserRegistration
     public DateTime? HireDate { get; init; }
 
     public string? PhoneNumber { get; init; }
+
+    public string? Address { get; init; }
 }
