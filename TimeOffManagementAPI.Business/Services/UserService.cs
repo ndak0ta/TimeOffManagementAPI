@@ -76,7 +76,7 @@ public class UserService : IUserService
         return await _userManager.UpdateAsync(user);
     }
 
-    public async Task<IdentityResult> HardUpdate(User user)
+    public async Task<IdentityResult> HardUpdateAsync(User user)
     {
         return await _userManager.UpdateAsync(user);
     }

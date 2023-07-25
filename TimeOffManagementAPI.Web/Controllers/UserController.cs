@@ -69,6 +69,13 @@ public class UserController : ControllerBase
         return Ok(await _userService.UpdateAsync(user));
     }
 
+    [Authorize(Roles = "Manager")]
+    [HttpPut("hard-update")]
+    public async Task<IActionResult> HardUpdateAsync([FromBody] User user)
+    {
+        return Ok(await _userService.HardUpdateAsync(user));
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {

@@ -12,6 +12,7 @@ using TimeOffManagementAPI.Business.Services;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Repositories;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Access.Seeders;
 using TimeOffManagementAPI.Data.Model.Mappings;
 using TimeOffManagementAPI.Data.Model.Models;
 using AutoMapper;
@@ -140,6 +141,9 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+
+DbSeeder.SeedAsync(builder.Services.BuildServiceProvider().GetRequiredService<UserManager<User>>(),
+ builder.Services.BuildServiceProvider().GetRequiredService<RoleManager<IdentityRole>>()).Wait();
 
 var app = builder.Build();
 
