@@ -16,6 +16,7 @@ namespace TimeOffManagementAPI.Business.Interfaces
         public Task<IdentityResult> UpdateAsync(UserUpdate user);
         public Task<IdentityResult> DeleteAsync(string id);
         public Task<IdentityResult> HardUpdateAsync(User user);
+        public Task<IdentityResult> AddUserToRoleAsync(string userId, string role);
         public Task<IdentityResult> ChangePasswordAsync(UserChangePassword user);
         public Task<IdentityResult> UpdateRemaningAnnualTimeOff(string userId);
         public Task UpdateAnnualTimeOffAsync();

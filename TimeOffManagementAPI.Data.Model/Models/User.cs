@@ -20,9 +20,9 @@ public class User : IdentityUser
 
     public DateTime HireDate { get; set; }
 
-    public int AnnualTimeOffs { get; set; }
+    public string? Address { get; set; }
 
-    public string Address { get; set; }
+    public int AnnualTimeOffs { get; set; }
 
     public int RemainingAnnualTimeOffs { get; set; }
 

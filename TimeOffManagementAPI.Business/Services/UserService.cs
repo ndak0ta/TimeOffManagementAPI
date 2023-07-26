@@ -147,12 +147,7 @@ public class UserService : IUserService
 
             decimal workYear = (DateTime.Now - user.HireDate).Days / 365;
 
-            if (workYear > 15)
-                user.AnnualTimeOffs = 26;
-            else if (workYear > 5)
-                user.AnnualTimeOffs = 20;
-            else if (workYear > 1)
-                user.AnnualTimeOffs = 14;
+            user.AnnualTimeOffs = Convert.ToInt32(workYear > 15 ? 26 : workYear > 5 ? 20 : workYear > 1 ? 14 : 0);
 
             await _userManager.UpdateAsync(user);
         }

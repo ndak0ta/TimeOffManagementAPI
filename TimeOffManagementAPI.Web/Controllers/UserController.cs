@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Models;
@@ -22,7 +23,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByTokenAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
@@ -76,6 +77,13 @@ public class UserController : ControllerBase
         return Ok(await _userService.HardUpdateAsync(user));
     }
 
+    [Authorize(Roles = "Manager")]
+    [HttpPut("{id}/give-role")]
+    public async Task<IActionResult> AddUserToRoleAsync(string id,[FromBody] string role)
+    {
+        return Ok(await _userService.AddUserToRoleAsync(id, role));
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
@@ -85,7 +93,7 @@ public class UserController : ControllerBase
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword changePassword)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
