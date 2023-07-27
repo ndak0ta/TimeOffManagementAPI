@@ -79,14 +79,14 @@ public class AuthService : IAuthService
         var audience = _configuration["Jwt:Audience"];
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(), ClaimValueTypes.Integer64)
         };
 
         _userManager.GetRolesAsync(user).Result.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
 
-        var expires = DateTime.UtcNow.AddMinutes(5);
+        var expires = DateTime.UtcNow.AddDays(1); // TODO sonra değiştir
         var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(

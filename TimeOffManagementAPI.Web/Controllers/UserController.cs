@@ -23,12 +23,12 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByTokenAsync()
     {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
 
-        return Ok(await _userService.GetByIdAsync(userId));
+        return Ok(await _userService.GetUserInfoAsync(userId));
     }
 
     [Authorize(Roles = "Manager")]
@@ -79,7 +79,7 @@ public class UserController : ControllerBase
 
     [Authorize(Roles = "Manager")]
     [HttpPut("{id}/give-role")]
-    public async Task<IActionResult> AddUserToRoleAsync(string id,[FromBody] string role)
+    public async Task<IActionResult> AddUserToRoleAsync(string id, [FromBody] string role)
     {
         return Ok(await _userService.AddUserToRoleAsync(id, role));
     }
@@ -109,4 +109,14 @@ public class UserController : ControllerBase
         return Ok(await _userService.SetAnnualTimeOffAsync(id, newAnnualTimeOff));
     }
 
+    [HttpGet("role")]
+    public async Task<IActionResult> GetRoleAsync()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        return Ok(await _userService.GetRoleAsync(userId));
+    }
 }

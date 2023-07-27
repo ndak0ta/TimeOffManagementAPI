@@ -12,6 +12,7 @@ namespace TimeOffManagementAPI.Business.Interfaces
         public Task<User> GetByIdAsync(string id);
         public Task<User> GetByUsernameAsync(string username);
         public Task<User> GetByEmailAsync(string email);
+        public Task<UserInfo> GetUserInfoAsync(string userId);
         public Task<IdentityResult> CreateAsync(UserRegistration user);
         public Task<IdentityResult> UpdateAsync(UserUpdate user);
         public Task<IdentityResult> DeleteAsync(string id);
@@ -21,5 +22,6 @@ namespace TimeOffManagementAPI.Business.Interfaces
         public Task<IdentityResult> UpdateRemaningAnnualTimeOff(string userId);
         public Task UpdateAnnualTimeOffAsync();
         public Task<IdentityResult> SetAnnualTimeOffAsync(string userId, int annualTimeOff);
+        public Task<Role> GetRoleAsync(string userId);
     }
 }

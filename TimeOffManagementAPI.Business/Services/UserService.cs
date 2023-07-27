@@ -48,6 +48,11 @@ public class UserService : IUserService
         return await _userManager.GetUsersInRoleAsync(role);
     }
 
+    public async Task<UserInfo> GetUserInfoAsync(string userId)
+    {
+        return _mapper.Map<UserInfo>(await _userManager.FindByIdAsync(userId));
+    }
+
     public async Task<IdentityResult> CreateAsync(UserRegistration userRegistration)
     {
         var user = _mapper.Map<User>(userRegistration);
@@ -151,5 +156,14 @@ public class UserService : IUserService
 
             await _userManager.UpdateAsync(user);
         }
+    }
+
+    public async Task<Role> GetRoleAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return new Role { Name = roles.FirstOrDefault() };
     }
 }

@@ -1,4 +1,5 @@
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
@@ -77,25 +78,34 @@ public static class ServiceCollectionExtension
 
     public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+        var keyString = configuration["Jwt:Key"];
 
-        services.AddAuthentication(o =>
+        if (string.IsNullOrEmpty(keyString))
+            throw new ArgumentNullException("Jwt:Key");
+
+        var key = Encoding.ASCII.GetBytes(keyString);
+
+        services.AddAuthentication(options =>
         {
-            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-            .AddJwtBearer(o =>
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(o =>
+        {
+            o.RequireHttpsMetadata = false;
+            o.SaveToken = true;
+            o.TokenValidationParameters = new TokenValidationParameters
             {
-                o.RequireHttpsMetadata = false;
-                o.SaveToken = true;
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                NameClaimType = JwtRegisteredClaimNames.Sub
+            };
+        });
     }
 
     public static void AddCustomAuthorization(this IServiceCollection services)
@@ -135,10 +145,16 @@ public static class ServiceCollectionExtension
     {
         services.AddScoped<ITimeOffRepository, TimeOffRepository>();
         services.AddScoped<ITimeOffService, TimeOffService>();
+
         services.AddScoped<IUserService, UserService>();
+
         services.AddScoped<IAuthService, AuthService>();
+
         services.AddScoped<IEmailService, EmailService>();
+
         services.AddScoped<ICalendarService, CalendarService>();
+
+        services.AddScoped<IRoleService, RoleService>();
     }
 
     public static void AddHostedService(this IServiceCollection services)

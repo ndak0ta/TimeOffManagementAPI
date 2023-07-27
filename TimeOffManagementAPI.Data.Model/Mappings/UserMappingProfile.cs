@@ -10,5 +10,6 @@ public class UserMappingProfile : Profile
     {
         CreateMap<UserRegistration, User>();
         CreateMap<UserUpdate, User>();
+        CreateMap<User, UserInfo>();
     }
 }

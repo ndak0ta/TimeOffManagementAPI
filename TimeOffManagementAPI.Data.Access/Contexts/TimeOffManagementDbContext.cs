@@ -17,6 +17,8 @@ public class TimeOffManagementDBContext : IdentityDbContext<User, Role, string>
     {
         base.OnModelCreating(modelBuilder);
 
+        // TODO seed işlemini test et
+
         List<Role> roles = new List<Role>
         {
             new Role { Name = "Manager", NormalizedName = "MANAGER"},
