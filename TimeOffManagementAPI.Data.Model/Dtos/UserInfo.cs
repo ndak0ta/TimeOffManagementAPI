@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Data.Model.Dtos;
 
@@ -13,5 +13,6 @@ public class UserInfo
     public int RemainingAnnualTimeOffs { get; init; }
     public string? Email { get; init; }
     public string? PhoneNumber { get; init; }
+    public IList<string>? Roles { get; set; }
 
 }

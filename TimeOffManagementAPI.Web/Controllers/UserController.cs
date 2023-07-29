@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Models;
@@ -93,7 +92,7 @@ public class UserController : ControllerBase
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword changePassword)
     {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);

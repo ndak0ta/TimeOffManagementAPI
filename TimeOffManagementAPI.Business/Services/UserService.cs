@@ -50,7 +50,11 @@ public class UserService : IUserService
 
     public async Task<UserInfo> GetUserInfoAsync(string userId)
     {
-        return _mapper.Map<UserInfo>(await _userManager.FindByIdAsync(userId));
+        var userInfo = _mapper.Map<UserInfo>(await _userManager.FindByIdAsync(userId));
+
+        userInfo.Roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(userId));
+
+        return userInfo;
     }
 
     public async Task<IdentityResult> CreateAsync(UserRegistration userRegistration)

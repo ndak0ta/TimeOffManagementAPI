@@ -47,9 +47,9 @@ public class TimeOffService : ITimeOffService
         return await _timeOffRepository.GetByIdAsync(id);
     }
 
-    public async Task<IEnumerable<TimeOff>> GetByUserIdAsync(string userId)
+    public async Task<IEnumerable<TimeOffInfo>> GetByUserIdAsync(string userId)
     {
-        return await _timeOffRepository.GetByUserIdAsync(userId);
+        return _mapper.Map<IEnumerable<TimeOffInfo>>(await _timeOffRepository.GetByUserIdAsync(userId));
     }
 
     public async Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest)
@@ -58,6 +58,9 @@ public class TimeOffService : ITimeOffService
 
         if (!(timeoff.StartDate.Year == DateTime.UtcNow.Year && timeoff.EndDate.Year == DateTime.UtcNow.Year))
             throw new ArgumentException("Start date and end date must be in the same year");
+        
+        if (timeoff.StartDate < DateTime.UtcNow)
+            throw new ArgumentException("Start date must be in the future");
 
         timeoff.TotalDays = CountDaysExcludingHolidays(timeoff.StartDate, timeoff.EndDate);
 

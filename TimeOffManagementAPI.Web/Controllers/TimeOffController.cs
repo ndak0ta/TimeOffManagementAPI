@@ -36,7 +36,7 @@ public class TimeOffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByUserIdAsync()
     {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
