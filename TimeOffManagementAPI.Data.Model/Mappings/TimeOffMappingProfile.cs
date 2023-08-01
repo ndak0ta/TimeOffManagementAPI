@@ -10,5 +10,6 @@ public class TimeOffMappingProfile : Profile
     {
         CreateMap<TimeOffRequest, TimeOff>();
         CreateMap<TimeOff, TimeOffInfo>();
+        CreateMap<TimeOffUpdate, TimeOff>();
     }
 }

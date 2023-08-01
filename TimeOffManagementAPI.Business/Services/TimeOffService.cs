@@ -58,7 +58,7 @@ public class TimeOffService : ITimeOffService
 
         if (!(timeoff.StartDate.Year == DateTime.UtcNow.Year && timeoff.EndDate.Year == DateTime.UtcNow.Year))
             throw new ArgumentException("Start date and end date must be in the same year");
-        
+
         if (timeoff.StartDate < DateTime.UtcNow)
             throw new ArgumentException("Start date must be in the future");
 
@@ -78,15 +78,25 @@ public class TimeOffService : ITimeOffService
         return await _timeOffRepository.CreateAsync(timeoff);
     }
 
-    public async Task<TimeOff> UpdateAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOff> UpdateAsync(TimeOffUpdate timeOffUpdate)
     {
-        var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
+        var timeOff = _mapper.Map<TimeOff>(timeOffUpdate);
 
-        return await _timeOffRepository.UpdateAsync(timeoff);
+        timeOff.TotalDays = CountDaysExcludingHolidays(timeOff.StartDate, timeOff.EndDate);
+
+        if (timeOff.IsApproved || !timeOff.IsPending && !timeOff.IsApproved)
+            throw new UnprocessableEntityException("You can't make changes on an approved or declined time off request");
+
+        return await _timeOffRepository.UpdateAsync(timeOff);
     }
 
     public async Task DeleteAsync(int id)
     {
+        var timeOff = await _timeOffRepository.GetByIdAsync(id);
+
+        if (timeOff.IsApproved || !timeOff.IsPending && !timeOff.IsApproved)
+            throw new UnprocessableEntityException("You can't delete an approved or declined time off request");
+
         await _timeOffRepository.DeleteAsync(id);
     }
 

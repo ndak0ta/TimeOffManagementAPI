@@ -2,12 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TimeOffManagementAPI.Data.Model.Dtos;
 
-public class TimeOffRequest
+public class TimeOffUpdate
 {
-    public TimeOffRequest()
-    {
-        TotalDays = (EndDate - StartDate).Days;
-    }
+    [Required]
+    public int Id { get; set; }
 
     [MaxLength(255)]
     public string? Description { get; set; }
@@ -17,8 +15,6 @@ public class TimeOffRequest
 
     [Required]
     public DateTime EndDate { get; set; }
-
-    public int TotalDays { get; set; } // TODO silinebilir
 
     [Required]
     public string? UserId { get; set; }

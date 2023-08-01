@@ -6,7 +6,7 @@ public class UserInfo
 {
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
-    public DateTime? BirthDate { get; init; }
+    public DateTime? DateOfBirth { get; init; }
     public DateTime? HireDate { get; init; }
     public string? Address { get; init; }
     public int AnnualTimeOffs { get; init; }

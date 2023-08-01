@@ -10,7 +10,7 @@ public interface ITimeOffService
     public Task<TimeOff> GetByIdAsync(int id);
     public Task<IEnumerable<TimeOffInfo>> GetByUserIdAsync(string userId);
     public Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest);
-    public Task<TimeOff> UpdateAsync(TimeOffRequest timeOffRequest);
+    public Task<TimeOff> UpdateAsync(TimeOffUpdate timeOffUpdate);
     public Task DeleteAsync(int id);
     public Task<TimeOff> ApproveAsync(int id, bool isApproved);
 }

@@ -12,10 +12,12 @@ namespace TimeOffManagementAPI.Web.Controllers;
 [Route("[controller]")]
 public class TimeOffController : ControllerBase
 {
+    private readonly ILogger<TimeOffController> _logger;
     private readonly ITimeOffService _timeOffService;
 
-    public TimeOffController(ITimeOffService timeOffService)
+    public TimeOffController(ILogger<TimeOffController> logger, ITimeOffService timeOffService)
     {
+        _logger = logger;
         _timeOffService = timeOffService;
     }
 
@@ -52,7 +54,7 @@ public class TimeOffController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] TimeOffRequest timeOffRequest)
+    public async Task<IActionResult> CreateAsync(TimeOffRequest timeOffRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -65,17 +67,26 @@ public class TimeOffController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] TimeOffRequest timeOffRequest)
+    public async Task<IActionResult> UpdateAsync(TimeOffUpdate timeOffUpdate)
     {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        _logger.LogInformation("UpdateAsync called with {data}", timeOffUpdate);
+
+        if (timeOffUpdate == null)
+        {
+            _logger.LogWarning("UpdateAsync: timeOffUpdate is null");
+            throw new ArgumentNullException(nameof(timeOffUpdate));
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
-            throw new ArgumentNullException(); // TODO mesaj yaz
+            throw new ArgumentNullException(userId);
 
-        timeOffRequest.UserId = userId;
+        timeOffUpdate.UserId = userId;
 
-        return Ok(await _timeOffService.UpdateAsync(timeOffRequest));
+        return Ok(await _timeOffService.UpdateAsync(timeOffUpdate));
     }
+
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAsync(int id)
