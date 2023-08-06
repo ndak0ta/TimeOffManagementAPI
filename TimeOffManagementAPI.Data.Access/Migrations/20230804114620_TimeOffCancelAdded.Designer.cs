@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeOffManagementAPI.Data.Access.Contexts;
 
@@ -11,9 +12,11 @@ using TimeOffManagementAPI.Data.Access.Contexts;
 namespace TimeOffManagementAPI.Data.Access.Migrations
 {
     [DbContext(typeof(TimeOffManagementDBContext))]
-    partial class TimeOffManagementDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230804114620_TimeOffCancelAdded")]
+    partial class TimeOffCancelAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,6 +110,18 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "4a2f102f-517c-417c-a2b5-6269ac813f3f",
+                            RoleId = "dc5534b4-76b3-47bd-b8b6-cb86a2b16759"
+                        },
+                        new
+                        {
+                            UserId = "581d668b-ef06-45e5-aaa0-e96a2e794186",
+                            RoleId = "e146986f-0e75-4900-b33a-1e9d55cc922f"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -156,6 +171,24 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "dc5534b4-76b3-47bd-b8b6-cb86a2b16759",
+                            ConcurrencyStamp = "5ee9fe06-e0ec-43bd-b5a8-9d27e8489bab",
+                            IsActive = true,
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "e146986f-0e75-4900-b33a-1e9d55cc922f",
+                            ConcurrencyStamp = "b5778eff-061d-45bc-8d70-40812b458826",
+                            IsActive = true,
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
+                        });
                 });
 
             modelBuilder.Entity("TimeOffManagementAPI.Data.Model.Models.TimeOff", b =>
@@ -320,6 +353,56 @@ namespace TimeOffManagementAPI.Data.Access.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "4a2f102f-517c-417c-a2b5-6269ac813f3f",
+                            AccessFailedCount = 0,
+                            Address = "Admin Address",
+                            AnnualTimeOffs = 0,
+                            AutomaticAnnualTimeOffIncrement = false,
+                            ConcurrencyStamp = "292d5678-3373-45e9-85da-3426a08a41c7",
+                            DateOfBirth = new DateTime(2023, 8, 4, 14, 46, 20, 406, DateTimeKind.Local).AddTicks(10),
+                            Email = "",
+                            EmailConfirmed = false,
+                            FirstName = "Admin",
+                            HireDate = new DateTime(2023, 8, 4, 14, 46, 20, 406, DateTimeKind.Local).AddTicks(50),
+                            LastName = "Admin",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEOYCPN/vmUxX72ttUwkAaBcxB55FvsixXBdE2T/+gqKPAfCWZuea8Ri3jSor5lZRuA==",
+                            PhoneNumber = "0000000000",
+                            PhoneNumberConfirmed = false,
+                            RemainingAnnualTimeOffs = 0,
+                            SecurityStamp = "d738fc69-6a5b-4522-8e05-e2b718368159",
+                            TwoFactorEnabled = false,
+                            UserName = "admin",
+                            isActive = true
+                        },
+                        new
+                        {
+                            Id = "581d668b-ef06-45e5-aaa0-e96a2e794186",
+                            AccessFailedCount = 0,
+                            Address = "Employee Address",
+                            AnnualTimeOffs = 0,
+                            AutomaticAnnualTimeOffIncrement = false,
+                            ConcurrencyStamp = "134fdd6e-5835-4ef2-8706-f6cd360e292f",
+                            DateOfBirth = new DateTime(2023, 8, 4, 14, 46, 20, 406, DateTimeKind.Local).AddTicks(80),
+                            Email = "",
+                            EmailConfirmed = false,
+                            FirstName = "Employee",
+                            HireDate = new DateTime(2023, 8, 4, 14, 46, 20, 406, DateTimeKind.Local).AddTicks(80),
+                            LastName = "Employee",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEP1xrpQProqtCI3G30xCcsFQ1fpcBzTXWdzMn8yFkG5Wa0HlrRr4Pg+fOHLCv1sFGQ==",
+                            PhoneNumber = "0000000000",
+                            PhoneNumberConfirmed = false,
+                            RemainingAnnualTimeOffs = 0,
+                            SecurityStamp = "f5b8d224-543d-4612-9631-c5894e7e418f",
+                            TwoFactorEnabled = false,
+                            UserName = "employee",
+                            isActive = true
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

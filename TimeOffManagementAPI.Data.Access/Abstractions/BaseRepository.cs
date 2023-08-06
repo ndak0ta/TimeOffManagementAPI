@@ -49,6 +49,16 @@ namespace TimeOffManagementAPI.Data.Access.Abstractions
                 throw new Exception("Internal server error.");
         }
 
+        public async Task<TEntity> GetByPropertyFirstAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            if (DbSet != null)
+            {
+                return await DbSet.AsNoTracking().Where(predicate).FirstAsync();
+            }
+            else
+                throw new Exception("Internal server error.");
+        }
+
         public async Task<TEntity> CreateAsync(TEntity entity)
         {
             if (DbSet != null)

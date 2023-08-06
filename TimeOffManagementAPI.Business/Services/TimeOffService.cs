@@ -9,15 +9,17 @@ namespace TimeOffManagementAPI.Business.Services;
 
 public class TimeOffService : ITimeOffService
 {
-    public readonly ITimeOffRepository _timeOffRepository;
+    private readonly ITimeOffRepository _timeOffRepository;
+    private readonly ITimeOffCancelService _timeOffCancelService;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
     private readonly ICalendarService _calendarService;
 
-    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService)
+    public TimeOffService(ITimeOffRepository timeOffRepository, ITimeOffCancelService timeOffCancelService, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService)
     {
         _timeOffRepository = timeOffRepository;
+        _timeOffCancelService = timeOffCancelService;
         _mapper = mapper;
         _userService = userService;
         _emailService = emailService;
@@ -49,7 +51,20 @@ public class TimeOffService : ITimeOffService
 
     public async Task<IEnumerable<TimeOffInfo>> GetByUserIdAsync(string userId)
     {
-        return _mapper.Map<IEnumerable<TimeOffInfo>>(await _timeOffRepository.GetByUserIdAsync(userId));
+        var timeOffs = _mapper.Map<IEnumerable<TimeOffInfo>>(await _timeOffRepository.GetByUserIdAsync(userId));
+        var timeOffCancels = await _timeOffCancelService.GetAllByUserIdAsync(userId);
+
+        foreach (var timeOff in timeOffs)
+        {
+            var timeOffCancel = timeOffCancels.FirstOrDefault(t => t.TimeOffId == timeOff.Id);
+
+            if (timeOffCancel != null)
+            {
+                timeOff.HasCancelRequest = true;
+            }
+        }
+
+        return timeOffs;
     }
 
     public async Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest)
