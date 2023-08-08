@@ -61,6 +61,20 @@ public class TimeOffCancelService : ITimeOffCancelService
         await _timeOffCancelRequestRepository.DeleteAsync(id);
     }
 
+    public async Task DeleteByTimeOffIdAsync(int id, string userId)
+    {
+        var TimeOffCancel = await _timeOffCancelRequestRepository.GetByTimeOffIdAsync(id)
+        ?? throw new NotFoundException("Time off cancelation request not found");
+
+        if (TimeOffCancel.UserId != userId)
+            throw new UnauthorizedAccessException("You are not authorized to delete this time off cancelation request");
+
+        if (TimeOffCancel.IsApproved)
+            throw new UnauthorizedAccessException("You are not authorized to delete this time off cancelation request");
+
+        await _timeOffCancelRequestRepository.DeleteAsync(TimeOffCancel.Id);
+    }
+
     public async Task<TimeOffCancel> ApproveAsync(int id, bool isApproved)
     {
         var TimeOffCancel = await _timeOffCancelRequestRepository.GetByIdAsync(id)

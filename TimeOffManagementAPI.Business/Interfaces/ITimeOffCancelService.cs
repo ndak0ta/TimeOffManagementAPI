@@ -10,5 +10,6 @@ public interface ITimeOffCancelService
     public Task<TimeOffCancel> GetByTimeOffIdAsync(int id);
     public Task<TimeOffCancel> CreateAsync(TimeOffCancelRequest timeOffCancelRequest);
     public Task DeleteAsync(int id, string userId);
+    public Task DeleteByTimeOffIdAsync(int id, string userId);
     public Task<TimeOffCancel> ApproveAsync(int id, bool isApproved);
 }

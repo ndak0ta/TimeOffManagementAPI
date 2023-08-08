@@ -52,7 +52,7 @@ public class TimeOffCancelController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(userId); // TODO mesaj yaz
 
-        await _timeOffCancelService.DeleteAsync(id, userId);
+        await _timeOffCancelService.DeleteByTimeOffIdAsync(id, userId);
 
         return Ok();
     }

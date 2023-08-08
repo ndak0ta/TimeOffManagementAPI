@@ -18,6 +18,8 @@ public class TimeOffManagementDBContext : IdentityDbContext<User, Role, string>
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<TimeOffCancel>().HasIndex(t => t.TimeOffId).IsUnique();
+
         // TODO seed işlemini test et
 
         /* List<Role> roles = new List<Role>
