@@ -8,7 +8,6 @@ namespace TimeOffManagementAPI.Data.Access.Contexts;
 public class TimeOffManagementDBContext : IdentityDbContext<User, Role, string>
 {
     public DbSet<TimeOff>? TimeOffs { get; set; }
-    public DbSet<TimeOffCancel>? TimeOffCancels { get; set; }
 
     public TimeOffManagementDBContext(DbContextOptions<TimeOffManagementDBContext> options) : base(options)
     {
@@ -17,8 +16,6 @@ public class TimeOffManagementDBContext : IdentityDbContext<User, Role, string>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<TimeOffCancel>().HasIndex(t => t.TimeOffId).IsUnique();
 
         // TODO seed işlemini test et
 

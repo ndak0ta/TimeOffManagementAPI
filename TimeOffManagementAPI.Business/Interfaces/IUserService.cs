@@ -14,9 +14,9 @@ namespace TimeOffManagementAPI.Business.Interfaces
         public Task<User> GetByEmailAsync(string email);
         public Task<UserInfo> GetUserInfoAsync(string userId);
         public Task<IdentityResult> CreateAsync(UserRegistration user);
-        public Task<IdentityResult> UpdateAsync(UserUpdate user);
+        public Task<IdentityResult> UpdateAsync(User user);
+        public Task<IdentityResult> UpdateContactAsync(UserUpdateContact user);
         public Task<IdentityResult> DeleteAsync(string id);
-        public Task<IdentityResult> HardUpdateAsync(User user);
         public Task<IdentityResult> AddUserToRoleAsync(string userId, string role);
         public Task<IdentityResult> ChangePasswordAsync(UserChangePassword user);
         public Task<IdentityResult> UpdateRemaningAnnualTimeOff(string userId);

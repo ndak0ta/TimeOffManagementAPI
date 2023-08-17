@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
 

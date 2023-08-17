@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Data.Model.Dtos;
+using AutoMapper;
 
 namespace TimeOffManagementAPI.Business.Services;
 
@@ -16,16 +17,18 @@ public class AuthService : IAuthService
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
+    private readonly IMapper _mapper;
 
-    public AuthService(IUserService userService, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+    public AuthService(IUserService userService, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IMapper mapper)
     {
         _userService = userService;
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
+        _mapper = mapper;
     }
 
-    public async Task<string> AuthenticateAsync(UserLogin userLogin)
+    public async Task<LoginResponse> AuthenticateAsync(UserLogin userLogin)
     {
         await _signInManager.SignOutAsync();
 
@@ -59,7 +62,9 @@ public class AuthService : IAuthService
             throw new ArgumentException("Username or password is incorrect.");
         }
 
-        return GenerateAccessToken(user);
+        var userInfo = _mapper.Map<UserInfo>(user);
+
+        return new LoginResponse { JWT = GenerateAccessToken(user), UserInfo = userInfo };
     }
 
     public async Task<IdentityResult> RegisterAsync(UserRegistration userRegistration)

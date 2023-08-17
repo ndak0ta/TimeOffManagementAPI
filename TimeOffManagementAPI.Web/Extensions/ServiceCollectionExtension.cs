@@ -55,7 +55,6 @@ public static class ServiceCollectionExtension
         {
             map.AddProfile<UserMappingProfile>();
             map.AddProfile<TimeOffMappingProfile>();
-            map.AddProfile<TimeOffCancelMappingProfile>();
         });
         services.AddSingleton(mapperConfig.CreateMapper());
     }
@@ -146,9 +145,6 @@ public static class ServiceCollectionExtension
     {
         services.AddScoped<ITimeOffRepository, TimeOffRepository>();
         services.AddScoped<ITimeOffService, TimeOffService>();
-
-        services.AddScoped<ITimeOffCancelRepository, TimeOffCancelRepository>();
-        services.AddScoped<ITimeOffCancelService, TimeOffCancelService>();
 
         services.AddScoped<IUserService, UserService>();
 

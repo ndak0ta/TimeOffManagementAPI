@@ -10,6 +10,7 @@ public class TimeOff
         IsApproved = false;
         IsPending = true;
         IsActive = true;
+        HasCancelRequest = false;
         IsCancelled = false;
         CreatedAt = DateTime.Now;
         TotalDays = (EndDate - StartDate).Days;
@@ -34,6 +35,7 @@ public class TimeOff
     public bool IsPending { get; set; }
 
     public bool IsActive { get; set; }
+    public bool HasCancelRequest { get; set; }
 
     public bool IsCancelled { get; set; }
 

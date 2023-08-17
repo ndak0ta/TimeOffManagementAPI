@@ -83,6 +83,7 @@ public class TimeOffController : ControllerBase
 
         timeOffUpdate.UserId = userId;
 
+
         return Ok(await _timeOffService.UpdateAsync(timeOffUpdate));
     }
 
@@ -100,6 +101,34 @@ public class TimeOffController : ControllerBase
     public async Task<IActionResult> ApproveAsync(int id, bool isApproved)
     {
         return Ok(await _timeOffService.ApproveAsync(id, isApproved));
+    }
+
+    [HttpPost("{id:int}/cancel-request")]
+    public async Task<IActionResult> CancelRequestAsync(int id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        return Ok(await _timeOffService.CancelRequestAsync(id, userId));
+    }
+
+    [HttpPost("{id:int}/approve-cancel")]
+    public async Task<IActionResult> ApproveCancelRequestAsync(int id)
+    {
+        return Ok(await _timeOffService.ApproveCancelRequestAsync(id));
+    }
+
+    [HttpPost("{id:int}/cancel-draw")]
+    public async Task<IActionResult> DrawCancelRequestAsync(int id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        return Ok(await _timeOffService.DrawCancelRequestAsync(id, userId));
     }
 }
 

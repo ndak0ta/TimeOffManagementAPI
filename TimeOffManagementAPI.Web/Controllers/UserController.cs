@@ -63,17 +63,17 @@ public class UserController : ControllerBase
         return Created("", await _userService.CreateAsync(user));
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] UserUpdate user)
+    [HttpPatch("update-contact")]
+    public async Task<IActionResult> UpdateContactAsync([FromBody] UserUpdateContact user)
     {
-        return Ok(await _userService.UpdateAsync(user));
+        return Ok(await _userService.UpdateContactAsync(user));
     }
 
     [Authorize(Roles = "Manager")]
-    [HttpPut("hard-update")]
-    public async Task<IActionResult> HardUpdateAsync([FromBody] User user)
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync([FromBody] User user)
     {
-        return Ok(await _userService.HardUpdateAsync(user));
+        return Ok(await _userService.UpdateAsync(user));
     }
 
     [Authorize(Roles = "Manager")]

@@ -66,13 +66,8 @@ public class UserService : IUserService
         return await _userManager.CreateAsync(user, userRegistration.Password);
     }
 
-    public async Task<IdentityResult> UpdateAsync(UserUpdate userUpdate)
+    public async Task<IdentityResult> UpdateAsync(User user)
     {
-        var user = _mapper.Map<User>(userUpdate);
-
-        if (await _userManager.CheckPasswordAsync(user, userUpdate.Password))
-            throw new UnauthorizedAccessException("Password is incorrect");
-
         return await _userManager.UpdateAsync(user);
     }
 
@@ -85,8 +80,10 @@ public class UserService : IUserService
         return await _userManager.UpdateAsync(user);
     }
 
-    public async Task<IdentityResult> HardUpdateAsync(User user)
+    public async Task<IdentityResult> UpdateContactAsync(UserUpdateContact userUpdate)
     {
+        var user = _mapper.Map<User>(userUpdate);
+
         return await _userManager.UpdateAsync(user);
     }
 

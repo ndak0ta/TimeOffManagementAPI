@@ -10,16 +10,14 @@ namespace TimeOffManagementAPI.Business.Services;
 public class TimeOffService : ITimeOffService
 {
     private readonly ITimeOffRepository _timeOffRepository;
-    private readonly ITimeOffCancelService _timeOffCancelService;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
     private readonly ICalendarService _calendarService;
 
-    public TimeOffService(ITimeOffRepository timeOffRepository, ITimeOffCancelService timeOffCancelService, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService)
+    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService)
     {
         _timeOffRepository = timeOffRepository;
-        _timeOffCancelService = timeOffCancelService;
         _mapper = mapper;
         _userService = userService;
         _emailService = emailService;
@@ -51,49 +49,38 @@ public class TimeOffService : ITimeOffService
 
     public async Task<IEnumerable<TimeOffInfo>> GetByUserIdAsync(string userId)
     {
-        var timeOffs = _mapper.Map<IEnumerable<TimeOffInfo>>(await _timeOffRepository.GetByUserIdAsync(userId));
-        var timeOffCancels = await _timeOffCancelService.GetAllByUserIdAsync(userId);
-
-        foreach (var timeOff in timeOffs)
-        {
-            var timeOffCancel = timeOffCancels.FirstOrDefault(t => t.TimeOffId == timeOff.Id);
-
-            if (timeOffCancel != null)
-            {
-                timeOff.HasCancelRequest = true;
-            }
-        }
-
-        return timeOffs;
+        return _mapper.Map<IEnumerable<TimeOffInfo>>(await _timeOffRepository.GetByUserIdAsync(userId));
     }
 
-    public async Task<TimeOff> CreateAsync(TimeOffRequest timeOffRequest)
+    public async Task<TimeOffInfo> CreateAsync(TimeOffRequest timeOffRequest)
     {
-        var timeoff = _mapper.Map<TimeOff>(timeOffRequest);
+        var timeOff = _mapper.Map<TimeOff>(timeOffRequest);
 
-        if (!(timeoff.StartDate.Year == DateTime.UtcNow.Year && timeoff.EndDate.Year == DateTime.UtcNow.Year))
+        if (!(timeOff.StartDate.Year == DateTime.UtcNow.Year && timeOff.EndDate.Year == DateTime.UtcNow.Year))
             throw new ArgumentException("Start date and end date must be in the same year");
 
-        if (timeoff.StartDate < DateTime.UtcNow)
+        if (timeOff.StartDate < DateTime.UtcNow)
             throw new ArgumentException("Start date must be in the future");
 
-        timeoff.TotalDays = CountDaysExcludingHolidays(timeoff.StartDate, timeoff.EndDate);
+        timeOff.TotalDays = CountDaysExcludingHolidays(timeOff.StartDate, timeOff.EndDate);
 
-        if (timeoff.UserId == null)
+        if (timeOff.UserId == null)
             throw new ArgumentException("User id is required");
 
-        if (timeoff.TotalDays < 0)
+        if (timeOff.TotalDays < 0)
             throw new ArgumentException("Start date must be before end date");
 
-        var user = await _userService.GetByIdAsync(timeoff.UserId);
+        var user = await _userService.GetByIdAsync(timeOff.UserId);
 
-        if (timeoff.TotalDays > user.RemainingAnnualTimeOffs)
+        if (timeOff.TotalDays > user.RemainingAnnualTimeOffs)
             throw new UnprocessableEntityException("You don't have enough time off left");
 
-        return await _timeOffRepository.CreateAsync(timeoff);
+        var CreatedTimeOff = await _timeOffRepository.CreateAsync(timeOff);
+
+        return _mapper.Map<TimeOffInfo>(CreatedTimeOff);
     }
 
-    public async Task<TimeOff> UpdateAsync(TimeOffUpdate timeOffUpdate)
+    public async Task<TimeOffInfo> UpdateAsync(TimeOffUpdate timeOffUpdate)
     {
         var timeOff = _mapper.Map<TimeOff>(timeOffUpdate);
 
@@ -102,7 +89,9 @@ public class TimeOffService : ITimeOffService
         if (timeOff.IsApproved || !timeOff.IsPending && !timeOff.IsApproved)
             throw new UnprocessableEntityException("You can't make changes on an approved or declined time off request");
 
-        return await _timeOffRepository.UpdateAsync(timeOff);
+        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
+
+        return _mapper.Map<TimeOffInfo>(updatedTimeOff);
     }
 
     public async Task DeleteAsync(int id)
@@ -115,7 +104,7 @@ public class TimeOffService : ITimeOffService
         await _timeOffRepository.DeleteAsync(id);
     }
 
-    public async Task<TimeOff> ApproveAsync(int id, bool isApproved)
+    public async Task<TimeOffInfo> ApproveAsync(int id, bool isApproved)
     {
         var timeoff = await _timeOffRepository.GetByIdAsync(id);
 
@@ -123,24 +112,75 @@ public class TimeOffService : ITimeOffService
 
         timeoff.IsPending = false;
 
-        var result = await _timeOffRepository.UpdateAsync(timeoff);
+        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeoff);
 
         if (timeoff.UserId == null)
             throw new NullReferenceException("User id is missing");
 
-        if (result.IsApproved)
+        var user = await _userService.GetByIdAsync(timeoff.UserId);
+        if (updatedTimeOff.IsApproved)
         {
             await _userService.UpdateRemaningAnnualTimeOff(timeoff.UserId);
-            var user = await _userService.GetByIdAsync(timeoff.UserId);
             await _emailService.SendEmaiAsync(user.Email, "Time off request approved", $"Your time off request from {timeoff.StartDate} to {timeoff.EndDate} has been approved.");
         }
-        else if (!result.IsApproved)
+        else if (!updatedTimeOff.IsApproved)
         {
-            var user = await _userService.GetByIdAsync(timeoff.UserId);
             await _emailService.SendEmaiAsync(user.Email, "Time off request rejected", $"Your time off request from {timeoff.StartDate} to {timeoff.EndDate} has been rejected.");
         }
 
-        return result;
+        return _mapper.Map<TimeOffInfo>(updatedTimeOff);
+    }
+
+    public async Task<TimeOffInfo> CancelRequestAsync(int id, string userId)
+    {
+        var timeoff = await _timeOffRepository.GetByIdAsync(id);
+
+        if (!timeoff.IsApproved)
+            throw new UnprocessableEntityException("You can only cancel an approved or declined time off request");
+
+        if (timeoff.UserId != userId)
+            throw new UnprocessableEntityException("You can only cancel your own time off request");
+
+        timeoff.HasCancelRequest = true;
+        timeoff.IsPending = true;
+
+        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeoff);
+
+        return _mapper.Map<TimeOffInfo>(updatedTimeOff);
+    }
+
+    public async Task<TimeOffInfo> ApproveCancelRequestAsync(int id)
+    {
+        var timeoff = await _timeOffRepository.GetByIdAsync(id);
+
+        if (!timeoff.HasCancelRequest)
+            throw new UnprocessableEntityException("You can only approve a cancel request");
+
+        timeoff.IsActive = true;
+        timeoff.IsPending = false;
+        timeoff.IsApproved = false;
+        timeoff.IsCancelled = true;
+
+        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeoff);
+
+        return _mapper.Map<TimeOffInfo>(updatedTimeOff);
+    }
+
+    public async Task<TimeOffInfo> DrawCancelRequestAsync(int id, string userId)
+    {
+        var timeOff = await _timeOffRepository.GetByIdAsync(id);
+
+        if (!timeOff.HasCancelRequest)
+            throw new UnprocessableEntityException("You can only draw a cancel request");
+
+        if (timeOff.UserId != userId)
+            throw new UnprocessableEntityException("You can only draw your own cancel request");
+
+        timeOff.HasCancelRequest = false;
+
+        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
+
+        return _mapper.Map<TimeOffInfo>(updatedTimeOff);
     }
 
     private int CountDaysExcludingHolidays(DateTime startDate, DateTime endDate)
