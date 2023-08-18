@@ -56,6 +56,7 @@ public static class ServiceCollectionExtension
             map.AddProfile<UserMappingProfile>();
             map.AddProfile<TimeOffMappingProfile>();
         });
+
         services.AddSingleton(mapperConfig.CreateMapper());
     }
 

@@ -8,7 +8,7 @@ public class User : IdentityUser
     {
         AnnualTimeOffs = 0;
         RemainingAnnualTimeOffs = AnnualTimeOffs;
-        isActive = true;
+        IsActive = true;
         AutomaticAnnualTimeOffIncrement = true;
     }
 
@@ -28,7 +28,7 @@ public class User : IdentityUser
 
     public bool AutomaticAnnualTimeOffIncrement { get; set; }
 
-    public bool isActive { get; set; }
+    public bool IsActive { get; set; }
 
     public ICollection<TimeOff>? TimeOffs { get; set; }
 }

@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
 
@@ -66,14 +65,21 @@ public class UserController : ControllerBase
     [HttpPatch("update-contact")]
     public async Task<IActionResult> UpdateContactAsync([FromBody] UserUpdateContact user)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            throw new ArgumentNullException(userId);
+
+        user.Id = userId;
+
         return Ok(await _userService.UpdateContactAsync(user));
     }
 
     [Authorize(Roles = "Manager")]
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] User user)
+    public async Task<IActionResult> UpdateAsync([FromBody] UserUpdate userUpdate)
     {
-        return Ok(await _userService.UpdateAsync(user));
+        return Ok(await _userService.UpdateAsync(userUpdate));
     }
 
     [Authorize(Roles = "Manager")]

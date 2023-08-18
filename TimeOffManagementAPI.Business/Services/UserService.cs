@@ -18,14 +18,25 @@ public class UserService : IUserService
         _userManager = userManager;
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<IEnumerable<UserInfo>> GetAllAsync()
     {
-        return await _userManager.Users.Where(u => u.isActive).ToListAsync();
+        var users = await _userManager.Users.Where(u => u.IsActive).ToListAsync();
+
+        var userInfos = new List<UserInfo>();
+
+        foreach (var user in users)
+        {
+            var userToAdd = _mapper.Map<UserInfo>(user);
+            userToAdd.Roles = await _userManager.GetRolesAsync(user);
+            userInfos.Add(userToAdd);
+        }
+
+        return userInfos;
     }
 
     public async Task<IEnumerable<User>> GetAllPasiveAsync()
     {
-        return await _userManager.Users.Where(u => !u.isActive).ToListAsync();
+        return await _userManager.Users.Where(u => !u.IsActive).ToListAsync();
     }
 
     public async Task<User> GetByIdAsync(string id)
@@ -66,23 +77,39 @@ public class UserService : IUserService
         return await _userManager.CreateAsync(user, userRegistration.Password);
     }
 
-    public async Task<IdentityResult> UpdateAsync(User user)
+    public async Task<UserUpdate> UpdateAsync(UserUpdate userUpdate)
     {
-        return await _userManager.UpdateAsync(user);
+        var existing = await _userManager.FindByIdAsync(userUpdate.Id);
+
+        existing.UserName = userUpdate.UserName ?? existing.UserName;
+        existing.FirstName = userUpdate.FirstName ?? existing.FirstName;
+        existing.LastName = userUpdate.LastName ?? existing.LastName;
+        existing.Address = userUpdate.Address ?? existing.Address;
+        existing.Email = userUpdate.Email ?? existing.Email;
+        existing.PhoneNumber = userUpdate.PhoneNumber ?? existing.PhoneNumber;
+        existing.DateOfBirth = userUpdate.DateOfBirth ?? existing.DateOfBirth;
+        existing.HireDate = userUpdate.HireDate ?? existing.HireDate;
+
+        await _userManager.UpdateAsync(existing);
+
+        return userUpdate;
     }
 
     public async Task<IdentityResult> DeleteAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
 
-        user.isActive = false;
+        user.IsActive = false;
 
         return await _userManager.UpdateAsync(user);
     }
 
     public async Task<IdentityResult> UpdateContactAsync(UserUpdateContact userUpdate)
     {
-        var user = _mapper.Map<User>(userUpdate);
+        var user = await _userManager.FindByIdAsync(userUpdate.Id);
+
+        user.Email = userUpdate.Email;
+        user.PhoneNumber = userUpdate.PhoneNumber;
 
         return await _userManager.UpdateAsync(user);
     }

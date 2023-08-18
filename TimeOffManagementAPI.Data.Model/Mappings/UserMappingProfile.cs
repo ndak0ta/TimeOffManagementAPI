@@ -8,8 +8,10 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
+        CreateMap<User, UserInfo>();
         CreateMap<UserRegistration, User>();
         CreateMap<UserUpdate, User>();
-        CreateMap<User, UserInfo>();
+        CreateMap<User, UserUpdate>();
+        CreateMap<UserUpdateContact, User>();
     }
 }
