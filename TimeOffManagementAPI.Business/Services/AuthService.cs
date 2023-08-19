@@ -43,6 +43,9 @@ public class AuthService : IAuthService
 
         var user = await _userService.GetByUsernameAsync(userLogin.UserName);
 
+        if (user == null)
+            throw new UnauthorizedAccessException("Username or password is incorrect.");
+
         var result = await _signInManager.PasswordSignInAsync(user, userLogin.Password, false, true);
 
         if (result.Succeeded)
@@ -67,10 +70,10 @@ public class AuthService : IAuthService
         return new LoginResponse { JWT = GenerateAccessToken(user), UserInfo = userInfo };
     }
 
-    public async Task<IdentityResult> RegisterAsync(UserRegistration userRegistration)
+    /* public async Task<IdentityResult> RegisterAsync(UserRegistration userRegistration)
     {
         return await _userService.CreateAsync(userRegistration);
-    }
+    } */
 
     private string GenerateAccessToken(User user)
     {

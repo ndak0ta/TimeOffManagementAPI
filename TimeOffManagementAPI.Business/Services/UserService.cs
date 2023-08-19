@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Data.Model.Dtos;
+using System.Text;
 
 namespace TimeOffManagementAPI.Business.Services;
 
@@ -11,11 +12,13 @@ public class UserService : IUserService
 {
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
+    private readonly IEmailService _emailService;
 
-    public UserService(IMapper mapper, UserManager<User> userManager)
+    public UserService(IMapper mapper, UserManager<User> userManager, IEmailService emailService)
     {
         _mapper = mapper;
         _userManager = userManager;
+        _emailService = emailService;
     }
 
     public async Task<IEnumerable<UserInfo>> GetAllAsync()
@@ -72,9 +75,19 @@ public class UserService : IUserService
     {
         var user = _mapper.Map<User>(userRegistration);
 
-        await _userManager.AddToRoleAsync(user, "Employee");
+        user.UserName = CeateUsername(userRegistration.FirstName, userRegistration.LastName);
 
-        return await _userManager.CreateAsync(user, userRegistration.Password);
+        var password = CreatePassword(8);
+
+        var result = await _userManager.CreateAsync(user, password);
+
+        if (result.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(user, "Employee");
+            await _emailService.SendEmaiAsync(user.Email, "Account created", $"Your account has been created. Your username is {user.UserName} and your password is {password} .");
+        }
+
+        return result;
     }
 
     public async Task<UserUpdate> UpdateAsync(UserUpdate userUpdate)
@@ -125,7 +138,7 @@ public class UserService : IUserService
     {
         var user = await _userManager.FindByIdAsync(userChangePassword.Id);
 
-        if (await _userManager.CheckPasswordAsync(user, userChangePassword.OldPassword))
+        if (!await _userManager.CheckPasswordAsync(user, userChangePassword.OldPassword))
             throw new UnauthorizedAccessException("Password is incorrect");
 
         return await _userManager.ChangePasswordAsync(user, userChangePassword.OldPassword, userChangePassword.NewPassword);
@@ -193,5 +206,32 @@ public class UserService : IUserService
         var roles = await _userManager.GetRolesAsync(user);
 
         return new Role { Name = roles.FirstOrDefault() };
+    }
+
+    private string CeateUsername(string? firstName, string? lastName)
+    {
+        if (firstName == null || lastName == null)
+            throw new NullReferenceException("First name or last name is null");
+
+        var username = firstName.ToLower() + "." + lastName.ToLower();
+
+        var users = _userManager.Users.Where(u => u.UserName.StartsWith(username)).ToList();
+
+        if (users.Count == 0)
+            return username;
+
+        return username + users.Count;
+    }
+
+    private string CreatePassword(int length)
+    {
+        const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.,?!@#$%^&*()_+=-";
+        StringBuilder res = new();
+        Random rnd = new();
+        while (0 < length--)
+        {
+            res.Append(valid[rnd.Next(valid.Length)]);
+        }
+        return res.ToString();
     }
 }

@@ -183,6 +183,19 @@ public class TimeOffService : ITimeOffService
         return _mapper.Map<TimeOffInfo>(updatedTimeOff);
     }
 
+    public async Task DeletePastTimeOffAsync()
+    {
+        var timeOffs = await _timeOffRepository.GetAllAsync();
+
+        foreach (var timeOff in timeOffs)
+        {
+            if (timeOff.EndDate < DateTime.UtcNow)
+            {
+                await _timeOffRepository.SoftDeleteAsync(timeOff.Id);
+            }
+        }
+    }
+
     private int CountDaysExcludingHolidays(DateTime startDate, DateTime endDate)
     {
         int totalDays = 0;

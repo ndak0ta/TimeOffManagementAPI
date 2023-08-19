@@ -10,4 +10,5 @@ public interface ITimeOffRepository
     public Task<TimeOff> CreateAsync(TimeOff TimeOff);
     public Task<TimeOff> UpdateAsync(TimeOff TimeOff);
     public Task DeleteAsync(int id);
+    public Task<TimeOff> SoftDeleteAsync(int id);
 }

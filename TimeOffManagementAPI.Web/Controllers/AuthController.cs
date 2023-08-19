@@ -21,11 +21,11 @@ public class AuthController : ControllerBase
         return Ok(await _authService.AuthenticateAsync(userLogin));
     }
 
-    [HttpPost("register")]
+    /* [HttpPost("register")]
     public async Task<IActionResult> RegisterAsync([FromBody] UserRegistration userRegistration)
     {
         return Created("", await _authService.RegisterAsync(userRegistration));
-    }
+    } */
 
     /*  [AllowAnonymous]
      [HttpPost("refresh")]

@@ -16,4 +16,13 @@ public class TimeOffRepository : BaseRepository<TimeOff>, ITimeOffRepository
     {
         return await GetByPropertyAsync(t => t.UserId == userId.ToString());
     }
+
+    public async Task<TimeOff> SoftDeleteAsync(int id)
+    {
+        var timeOff = await GetByIdAsync(id);
+
+        timeOff.IsActive = false;
+
+        return await UpdateAsync(timeOff);
+    }
 }

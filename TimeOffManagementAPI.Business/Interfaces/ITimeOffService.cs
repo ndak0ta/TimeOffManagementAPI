@@ -16,4 +16,5 @@ public interface ITimeOffService
     public Task<TimeOffInfo> CancelRequestAsync(int id, string userId);
     public Task<TimeOffInfo> ApproveCancelRequestAsync(int id);
     public Task<TimeOffInfo> DrawCancelRequestAsync(int id, string userId);
+    public Task DeletePastTimeOffAsync();
 }
