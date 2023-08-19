@@ -30,6 +30,8 @@ builder.Services.AddSwagger();
 
 builder.Services.AddScoped();
 
+builder.Services.AddMediatr();
+
 builder.Services.AddHostedService();
 
 builder.Services.AddHttpClient();

@@ -5,6 +5,8 @@ using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using System.Text;
+using MediatR;
+using TimeOffManagementAPI.Business.Commands.Email;
 
 namespace TimeOffManagementAPI.Business.Services;
 
@@ -13,12 +15,14 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
     private readonly IEmailService _emailService;
+    private readonly IMediator _mediator;
 
-    public UserService(IMapper mapper, UserManager<User> userManager, IEmailService emailService)
+    public UserService(IMapper mapper, UserManager<User> userManager, IEmailService emailService, IMediator mediator)
     {
         _mapper = mapper;
         _userManager = userManager;
         _emailService = emailService;
+        _mediator = mediator;
     }
 
     public async Task<IEnumerable<UserInfo>> GetAllAsync()
@@ -84,7 +88,7 @@ public class UserService : IUserService
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Employee");
-            await _emailService.SendEmaiAsync(user.Email, "Account created", $"Your account has been created. Your username is {user.UserName} and your password is {password} .");
+            await _mediator.Send(new SendEmailCommand(user.Email, "Your account has been created", $"Your username is {user.UserName} and your password is {password}"));
         }
 
         return result;
@@ -131,6 +135,8 @@ public class UserService : IUserService
     {
         var user = await _userManager.FindByIdAsync(userId);
 
+        await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+
         return await _userManager.AddToRoleAsync(user, roleName);
     }
 
@@ -150,10 +156,8 @@ public class UserService : IUserService
 
         int timeOffLeft = user.AnnualTimeOffs;
 
-        var userWithTimeOffs = await _userManager.Users.Include(u => u.TimeOffs).FirstOrDefaultAsync(u => u.Id == userId);
-
-        if (userWithTimeOffs == null)
-            throw new NullReferenceException("User not found");
+        var userWithTimeOffs = await _userManager.Users.Include(u => u.TimeOffs).FirstOrDefaultAsync(u => u.Id == userId)
+        ?? throw new NullReferenceException("User not found");
 
         if (userWithTimeOffs.TimeOffs == null)
             return IdentityResult.Success;

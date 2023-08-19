@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
+using MediatR;
+using TimeOffManagementAPI.Business.Auth.Commands;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -9,16 +11,18 @@ namespace TimeOffManagementAPI.Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IMediator _mediator;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IMediator mediator)
     {
         _authService = authService;
+        _mediator = mediator;
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> AuthenticateAsync([FromBody] UserLogin userLogin)
     {
-        return Ok(await _authService.AuthenticateAsync(userLogin));
+        return Ok(await _mediator.Send(new LoginCommand(userLogin)));
     }
 
     /* [HttpPost("register")]

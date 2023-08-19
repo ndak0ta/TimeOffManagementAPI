@@ -16,7 +16,8 @@ using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Mappings;
 using TimeOffManagementAPI.Data.Model.Models;
 using AutoMapper;
-
+using MediatR;
+using TimeOffManagementAPI.Business.Auth.Commands;
 
 namespace TimeOffManagementAPI.Web.Extensions;
 
@@ -156,6 +157,14 @@ public static class ServiceCollectionExtension
         services.AddScoped<ICalendarService, CalendarService>();
 
         services.AddScoped<IRoleService, RoleService>();
+    }
+
+    public static void AddMediatr(this IServiceCollection services)
+    {
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<LoginCommand>();
+        });
     }
 
     public static void AddHostedService(this IServiceCollection services)

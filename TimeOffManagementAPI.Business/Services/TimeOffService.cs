@@ -4,6 +4,8 @@ using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Exceptions;
+using MediatR;
+using TimeOffManagementAPI.Business.ApplicationUser.Commands;
 
 namespace TimeOffManagementAPI.Business.Services;
 
@@ -14,14 +16,16 @@ public class TimeOffService : ITimeOffService
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
     private readonly ICalendarService _calendarService;
+    private readonly IMediator _mediator;
 
-    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService)
+    public TimeOffService(ITimeOffRepository timeOffRepository, IMapper mapper, IUserService userService, IEmailService emailService, ICalendarService calendarService, IMediator mediator)
     {
         _timeOffRepository = timeOffRepository;
         _mapper = mapper;
         _userService = userService;
         _emailService = emailService;
         _calendarService = calendarService;
+        _mediator = mediator;
     }
 
     public async Task<IEnumerable<TimeOff>> GetAllAsync()
@@ -120,7 +124,7 @@ public class TimeOffService : ITimeOffService
         var user = await _userService.GetByIdAsync(timeoff.UserId);
         if (updatedTimeOff.IsApproved)
         {
-            await _userService.UpdateRemaningAnnualTimeOff(timeoff.UserId);
+            await _mediator.Send(new UpdateRemaningAnnualTimeOffCommand(user.Id));
             await _emailService.SendEmaiAsync(user.Email, "Time off request approved", $"Your time off request from {timeoff.StartDate} to {timeoff.EndDate} has been approved.");
         }
         else if (!updatedTimeOff.IsApproved)

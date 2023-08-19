@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
+using TimeOffManagementAPI.Business.ApplicationUser.Queries;
+using MediatR;
+using TimeOffManagementAPI.Business.ApplicationUser.Commands;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -12,10 +15,12 @@ namespace TimeOffManagementAPI.Web.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IMediator _mediator;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IMediator mediator)
     {
         _userService = userService;
+        _mediator = mediator;
     }
 
     [HttpGet]
@@ -26,21 +31,21 @@ public class UserController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(userId);
 
-        return Ok(await _userService.GetUserInfoAsync(userId));
+        return Ok(await _mediator.Send(new GetUserByIdQuery(userId)));
     }
 
     [Authorize(Roles = "Manager")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
-        return Ok(await _userService.GetAllAsync());
+        return Ok(await _mediator.Send(new GetAllUsersQuery()));
     }
 
     [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(string id)
     {
-        return Ok(await _userService.GetByIdAsync(id));
+        return Ok(await _mediator.Send(new GetUserByIdQuery(id)));
     }
 
     [HttpGet("username/{username}")]
@@ -59,7 +64,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] UserRegistration user)
     {
-        return Created("", await _userService.CreateAsync(user));
+        return Created("", await _mediator.Send(new CreateUserCommand(user)));
     }
 
     [HttpPatch("update-contact")]
@@ -79,20 +84,20 @@ public class UserController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateAsync([FromBody] UserUpdate userUpdate)
     {
-        return Ok(await _userService.UpdateAsync(userUpdate));
+        return Ok(await _mediator.Send(new UpdateUserCommand(userUpdate)));
     }
 
     [Authorize(Roles = "Manager")]
     [HttpPut("{id}/give-role")]
-    public async Task<IActionResult> AddUserToRoleAsync(string id, [FromBody] string role)
+    public async Task<IActionResult> AddRoleToUserAsync(string id, [FromBody] string role)
     {
-        return Ok(await _userService.AddUserToRoleAsync(id, role));
+        return Ok(await _mediator.Send(new AddRoleToUserCommand(id, role)));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
-        return Ok(await _userService.DeleteAsync(id));
+        return Ok(await _mediator.Send(new DeleteUserCommand(id)));
     }
 
     [HttpPost("change-password")]
@@ -105,13 +110,13 @@ public class UserController : ControllerBase
 
         changePassword.Id = userId;
 
-        return Ok(await _userService.ChangePasswordAsync(changePassword));
+        return Ok(await _mediator.Send(new ChangePasswordCommand(changePassword)));
     }
 
     [HttpPost("{id}/set-annual")]
     public async Task<IActionResult> SetAnnualTimeOffAsync([FromBody] string id, int newAnnualTimeOff)
     {
-        return Ok(await _userService.SetAnnualTimeOffAsync(id, newAnnualTimeOff));
+        return Ok(await _mediator.Send(new SetAnnualTimeOffCommand(id, newAnnualTimeOff)));
     }
 
     [HttpGet("role")]

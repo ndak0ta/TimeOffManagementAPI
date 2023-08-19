@@ -1,20 +1,34 @@
 using System.Net;
 using System.Net.Mail;
+using MediatR;
 using Microsoft.Extensions.Configuration;
-using TimeOffManagementAPI.Business.Interfaces;
 
-namespace TimeOffManagementAPI.Business.Services;
+namespace TimeOffManagementAPI.Business.Commands.Email;
 
-public class EmailService : IEmailService
+public record SendEmailCommand : IRequest
+{
+    public SendEmailCommand(string recipient, string subject, string body)
+    {
+        Recipient = recipient;
+        Subject = subject;
+        Body = body;
+    }
+
+    public string? Recipient { get; set; }
+    public string? Subject { get; set; }
+    public string? Body { get; set; }
+};
+
+public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand>
 {
     private readonly IConfiguration _configuration;
 
-    public EmailService(IConfiguration configuration)
+    public SendEmailCommandHandler(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public async Task SendEmaiAsync(string recipient, string subject, string body) // TODO html tasarım ayarla
+    public async Task Handle(SendEmailCommand sendEmailCommand, CancellationToken cancellationToken)
     {
         string? fromAddress = _configuration["EmailSettings:FromAddress"];
         string? smtpServer = _configuration["EmailSettings:SmtpServer"];
@@ -40,15 +54,20 @@ public class EmailService : IEmailService
             throw new ApplicationException("SMTP SSL configuration is invalid.");
         }
 
+        if (string.IsNullOrWhiteSpace(sendEmailCommand.Recipient))
+            throw new ArgumentNullException("Recipient cannot be null.");
+
         using var client = new SmtpClient(smtpServer, smtpPort);
+
         client.UseDefaultCredentials = false;
         client.Credentials = new NetworkCredential(username, password);
         client.EnableSsl = enableSsl;
 
-        var message = new MailMessage(fromAddress, recipient, subject, body);
-        message.IsBodyHtml = true;
+        var message = new MailMessage(fromAddress, sendEmailCommand.Recipient, sendEmailCommand.Subject, sendEmailCommand.Body)
+        {
+            IsBodyHtml = true
+        };
 
         await client.SendMailAsync(message);
     }
 }
-
