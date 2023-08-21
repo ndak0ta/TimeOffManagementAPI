@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Commands;
+namespace TimeOffManagementAPI.Business.Users.Commands;
 
 public record ChangePasswordCommand : IRequest<bool>
 {
@@ -26,7 +26,7 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
 
     public async Task<bool> Handle(ChangePasswordCommand changePasswordCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(changePasswordCommand.UserChangePassword?.Id) 
+        var user = await _userManager.FindByIdAsync(changePasswordCommand.UserChangePassword?.Id)
         ?? throw new ArgumentNullException("User not found");
 
         if (!await _userManager.CheckPasswordAsync(user, changePasswordCommand.UserChangePassword?.OldPassword))

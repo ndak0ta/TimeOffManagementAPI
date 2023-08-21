@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Queries;
+namespace TimeOffManagementAPI.Business.Users.Queries;
 
 public record GetAllUsersQuery : IRequest<IEnumerable<UserInfo>>;
 

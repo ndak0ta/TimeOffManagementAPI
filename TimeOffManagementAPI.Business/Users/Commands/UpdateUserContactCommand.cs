@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Commands;
+namespace TimeOffManagementAPI.Business.Users.Commands;
 
 public record UpdateUserContactCommand : IRequest<UserInfo>
 {
@@ -41,7 +41,7 @@ public class UpdateUserContactCommandHandler : IRequestHandler<UpdateUserContact
 
         if (!result.Succeeded)
             throw new Exception("Failed to update user");
-            
+
         return _mapper.Map<UserInfo>(user);
     }
 }

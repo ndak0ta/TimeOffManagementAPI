@@ -2,12 +2,12 @@ using System.Text;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TimeOffManagementAPI.Business.ApplicationUser.Queries;
-using TimeOffManagementAPI.Business.Commands.Email;
+using TimeOffManagementAPI.Business.Users.Queries;
+using TimeOffManagementAPI.Business.Email.Commands;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Commands;
+namespace TimeOffManagementAPI.Business.Users.Commands;
 
 public record CreateUserCommand : IRequest<UserInfo>
 {

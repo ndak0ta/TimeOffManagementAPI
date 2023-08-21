@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Commands;
+namespace TimeOffManagementAPI.Business.Users.Commands;
 
 public record DeleteUserCommand : IRequest<bool>
 {

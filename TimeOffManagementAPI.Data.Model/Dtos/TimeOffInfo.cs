@@ -11,5 +11,5 @@ public class TimeOffInfo
     public bool IsApproved { get; init; }
     public bool IsCancelled { get; init; }
     public DateTime? CreatedAt { get; init; }
-    public bool? HasCancelRequest { get; set; }
+    public bool? HasCancelRequest { get; init; }
 }

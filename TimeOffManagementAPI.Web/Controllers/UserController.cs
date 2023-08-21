@@ -1,11 +1,11 @@
+using MediatR;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
-using TimeOffManagementAPI.Business.ApplicationUser.Queries;
-using MediatR;
-using TimeOffManagementAPI.Business.ApplicationUser.Commands;
+using TimeOffManagementAPI.Business.Users.Queries;
+using TimeOffManagementAPI.Business.Users.Commands;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -51,13 +51,13 @@ public class UserController : ControllerBase
     [HttpGet("username/{username}")]
     public async Task<IActionResult> GetByUsernameAsync(string username)
     {
-        return Ok(await _userService.GetByUsernameAsync(username));
+        return Ok(await _mediator.Send(new GetUserByUsernameQuery(username)));
     }
 
     [HttpGet("email/{email}")]
     public async Task<IActionResult> GetByEmailAsync(string email)
     {
-        return Ok(await _userService.GetByEmailAsync(email));
+        return Ok(await _mediator.Send(new GetUserByEmailQuery(email)));
     }
 
     [Authorize(Roles = "Manager")]
@@ -77,7 +77,7 @@ public class UserController : ControllerBase
 
         user.Id = userId;
 
-        return Ok(await _userService.UpdateContactAsync(user));
+        return Ok(await _mediator.Send(new UpdateUserContactCommand(user)));
     }
 
     [Authorize(Roles = "Manager")]
@@ -117,16 +117,5 @@ public class UserController : ControllerBase
     public async Task<IActionResult> SetAnnualTimeOffAsync([FromBody] string id, int newAnnualTimeOff)
     {
         return Ok(await _mediator.Send(new SetAnnualTimeOffCommand(id, newAnnualTimeOff)));
-    }
-
-    [HttpGet("role")]
-    public async Task<IActionResult> GetRoleAsync()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (userId == null)
-            throw new ArgumentNullException(userId);
-
-        return Ok(await _userService.GetRoleAsync(userId));
     }
 }

@@ -1,10 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TimeOffManagementAPI.Business.ApplicationUser.Queries;
+using TimeOffManagementAPI.Business.Users.Queries;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Commands;
+namespace TimeOffManagementAPI.Business.Users.Commands;
 
 public record AddRoleToUserCommand : IRequest<UserInfo>
 {

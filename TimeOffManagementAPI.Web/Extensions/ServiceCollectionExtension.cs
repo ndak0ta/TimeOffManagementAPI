@@ -9,7 +9,6 @@ using Microsoft.OpenApi.Models;
 using TimeOffManagementAPI.Web.Filters;
 using TimeOffManagementAPI.Business.BackgroundServices;
 using TimeOffManagementAPI.Business.Interfaces;
-using TimeOffManagementAPI.Business.Services;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Repositories;
 using TimeOffManagementAPI.Data.Access.Interfaces;
@@ -130,7 +129,7 @@ public static class ServiceCollectionExtension
                 Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
             });
             c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        {
+                {
             new OpenApiSecurityScheme {
                 Reference = new OpenApiReference {
                     Type = ReferenceType.SecurityScheme,
@@ -138,25 +137,14 @@ public static class ServiceCollectionExtension
                 }
             },
             new string[] {}
-        }
-    });
+                }
+            });
         });
     }
 
     public static void AddScoped(this IServiceCollection services)
     {
         services.AddScoped<ITimeOffRepository, TimeOffRepository>();
-        services.AddScoped<ITimeOffService, TimeOffService>();
-
-        services.AddScoped<IUserService, UserService>();
-
-        services.AddScoped<IAuthService, AuthService>();
-
-        services.AddScoped<IEmailService, EmailService>();
-
-        services.AddScoped<ICalendarService, CalendarService>();
-
-        services.AddScoped<IRoleService, RoleService>();
     }
 
     public static void AddMediatr(this IServiceCollection services)

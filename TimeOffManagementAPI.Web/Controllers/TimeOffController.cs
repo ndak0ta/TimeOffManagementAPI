@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.Interfaces;
+using MediatR;
+using TimeOffManagementAPI.Business.TimeOffs.Queries;
+using TimeOffManagementAPI.Business.TimeOffs.Commands;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -13,25 +16,27 @@ public class TimeOffController : ControllerBase
 {
     private readonly ILogger<TimeOffController> _logger;
     private readonly ITimeOffService _timeOffService;
+    private readonly IMediator _mediator;
 
-    public TimeOffController(ILogger<TimeOffController> logger, ITimeOffService timeOffService)
+    public TimeOffController(ILogger<TimeOffController> logger, ITimeOffService timeOffService, IMediator mediator)
     {
         _logger = logger;
         _timeOffService = timeOffService;
+        _mediator = mediator;
     }
 
     [Authorize(Roles = "Manager")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllAsync()
     {
-        return Ok(await _timeOffService.GetAllAsync());
+        return Ok(await _mediator.Send(new GetAllTimeOffsQuery()));
     }
 
     [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
-        return Ok(await _timeOffService.GetByIdAsync(id));
+        return Ok(await _mediator.Send(new GetTimeOffByIdQuery(id)));
     }
 
     [HttpGet]
@@ -42,14 +47,14 @@ public class TimeOffController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(userId);
 
-        return Ok(await _timeOffService.GetByUserIdAsync(userId));
+        return Ok(await _mediator.Send(new GetTimeOffByUserIdQuery(userId)));
     }
 
     [Authorize(Roles = "Manager")]
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUserIdAsync(string userId)
     {
-        return Ok(await _timeOffService.GetByUserIdAsync(userId));
+        return Ok(await _mediator.Send(new GetTimeOffByUserIdQuery(userId)));
     }
 
     [HttpPost]
@@ -62,7 +67,7 @@ public class TimeOffController : ControllerBase
 
         timeOffRequest.UserId = userId;
 
-        return Created("", await _timeOffService.CreateAsync(timeOffRequest));
+        return Created("", await _mediator.Send(new CreateTimeOffCommand(timeOffRequest)));
     }
 
     [HttpPut]
@@ -84,14 +89,14 @@ public class TimeOffController : ControllerBase
         timeOffUpdate.UserId = userId;
 
 
-        return Ok(await _timeOffService.UpdateAsync(timeOffUpdate));
+        return Ok(await _mediator.Send(new UpdateTimeOffCommand(timeOffUpdate)));
     }
 
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
-        await _timeOffService.DeleteAsync(id);
+        await _mediator.Send(new DeleteTimeOffCommand(id));
 
         return NoContent();
     }
@@ -100,7 +105,7 @@ public class TimeOffController : ControllerBase
     [HttpPost("{id}/approve")]
     public async Task<IActionResult> ApproveAsync(int id, bool isApproved)
     {
-        return Ok(await _timeOffService.ApproveAsync(id, isApproved));
+        return Ok(await _mediator.Send(new ApproveTimeOffCommand(id, isApproved)));
     }
 
     [HttpPost("{id:int}/cancel-request")]
@@ -111,13 +116,13 @@ public class TimeOffController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(userId);
 
-        return Ok(await _timeOffService.CancelRequestAsync(id, userId));
+        return Ok(await _mediator.Send(new CancelTimeOffRequestCommand(id, userId)));
     }
 
     [HttpPost("{id:int}/approve-cancel")]
     public async Task<IActionResult> ApproveCancelRequestAsync(int id)
     {
-        return Ok(await _timeOffService.ApproveCancelRequestAsync(id));
+        return Ok(await _mediator.Send(new ApproveTimeOffCancelCommand(id, true)));
     }
 
     [HttpPost("{id:int}/cancel-draw")]
@@ -128,7 +133,7 @@ public class TimeOffController : ControllerBase
         if (userId == null)
             throw new ArgumentNullException(userId);
 
-        return Ok(await _timeOffService.DrawCancelRequestAsync(id, userId));
+        return Ok(await _mediator.Send(new DrawCancelRequestCommand(id, userId)));
     }
 }
 

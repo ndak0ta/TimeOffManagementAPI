@@ -2,6 +2,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using TimeOffManagementAPI.Business.Interfaces;
+using MediatR;
+using TimeOffManagementAPI.Business.TimeOffs.Commands;
 
 namespace TimeOffManagementAPI.Business.BackgroundServices;
 
@@ -28,9 +30,9 @@ public class DeleteTimeOffBackgroundService : BackgroundService
 
             using (var scope = _serviceProvider.CreateScope())
             {
-                var timeOffService = scope.ServiceProvider.GetRequiredService<ITimeOffService>();
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                await timeOffService.DeletePastTimeOffAsync();
+                await mediator.Send(new DeletePastTimeOffCommand());
             }
 
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);

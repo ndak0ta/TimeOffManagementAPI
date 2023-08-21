@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
-namespace TimeOffManagementAPI.Business.ApplicationUser.Queries;
+namespace TimeOffManagementAPI.Business.Users.Queries;
 
 public record GetUserByEmailQuery : IRequest<UserInfo>
 {

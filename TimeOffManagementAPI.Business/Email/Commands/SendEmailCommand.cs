@@ -3,7 +3,7 @@ using System.Net.Mail;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 
-namespace TimeOffManagementAPI.Business.Commands.Email;
+namespace TimeOffManagementAPI.Business.Email.Commands;
 
 public record SendEmailCommand : IRequest
 {

@@ -49,11 +49,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         if (string.IsNullOrWhiteSpace(loginQuery.UserLogin.Password))
             throw new ArgumentNullException(nameof(loginQuery.UserLogin.Password));
 
-        var user = await _userManager.FindByNameAsync(loginQuery.UserLogin.UserName);
-
-        if (user == null)
-            throw new UnauthorizedAccessException("Username or password is incorrect.");
-
+        var user = await _userManager.FindByNameAsync(loginQuery.UserLogin.UserName) ?? throw new UnauthorizedAccessException("Username or password is incorrect.");
         var result = await _signInManager.PasswordSignInAsync(user, loginQuery.UserLogin.Password, false, true);
 
         if (result.Succeeded)
