@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1705.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Web", "TimeOffManagementAPI.Web\TimeOffManagementAPI.Web.csproj", "{5AEA1A18-1936-49C0-B83F-7E3705353890}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{158949DA-B131-4E47-98BD-D64DE209EB1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Data.Model", "TimeOffManagementAPI.Data.Model\TimeOffManagementAPI.Data.Model.csproj", "{02E8798A-8FBE-4E57-9CF9-EF4483C60A5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Web", "src\TimeOffManagementAPI.Web\TimeOffManagementAPI.Web.csproj", "{F1C4FD01-54BD-4A8A-82AB-594B838D5194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Data.Access", "TimeOffManagementAPI.Data.Access\TimeOffManagementAPI.Data.Access.csproj", "{A807A976-0447-4514-B6C9-816DC306D731}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Business", "src\TimeOffManagementAPI.Business\TimeOffManagementAPI.Business.csproj", "{BBB69C0D-C597-48C2-88BA-FA4AE5E458E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Business", "TimeOffManagementAPI.Business\TimeOffManagementAPI.Business.csproj", "{D0CF1C9C-E29E-4182-900B-269DEB6BE8F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Data.Access", "src\TimeOffManagementAPI.Data.Access\TimeOffManagementAPI.Data.Access.csproj", "{180CBC9F-58EF-47F0-A609-6B21EDB04357}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Exceptions", "TimeOffManagementAPI.Exceptions\TimeOffManagementAPI.Exceptions.csproj", "{A99CF779-B7D6-49C4-BD1F-8236EEE1B97D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Data.Model", "src\TimeOffManagementAPI.Data.Model\TimeOffManagementAPI.Data.Model.csproj", "{DCF8D50F-36E0-48B2-9F99-F18506E42949}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagementAPI.Exceptions", "src\TimeOffManagementAPI.Exceptions\TimeOffManagementAPI.Exceptions.csproj", "{11C5BF93-24AF-408C-9564-19FE713C1BB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,34 +21,34 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5AEA1A18-1936-49C0-B83F-7E3705353890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5AEA1A18-1936-49C0-B83F-7E3705353890}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5AEA1A18-1936-49C0-B83F-7E3705353890}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5AEA1A18-1936-49C0-B83F-7E3705353890}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02E8798A-8FBE-4E57-9CF9-EF4483C60A5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02E8798A-8FBE-4E57-9CF9-EF4483C60A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02E8798A-8FBE-4E57-9CF9-EF4483C60A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02E8798A-8FBE-4E57-9CF9-EF4483C60A5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66A92632-32C8-466C-8FA0-2F866D9B2D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66A92632-32C8-466C-8FA0-2F866D9B2D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A92632-32C8-466C-8FA0-2F866D9B2D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66A92632-32C8-466C-8FA0-2F866D9B2D96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A807A976-0447-4514-B6C9-816DC306D731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A807A976-0447-4514-B6C9-816DC306D731}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A807A976-0447-4514-B6C9-816DC306D731}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A807A976-0447-4514-B6C9-816DC306D731}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0CF1C9C-E29E-4182-900B-269DEB6BE8F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0CF1C9C-E29E-4182-900B-269DEB6BE8F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0CF1C9C-E29E-4182-900B-269DEB6BE8F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0CF1C9C-E29E-4182-900B-269DEB6BE8F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A99CF779-B7D6-49C4-BD1F-8236EEE1B97D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A99CF779-B7D6-49C4-BD1F-8236EEE1B97D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A99CF779-B7D6-49C4-BD1F-8236EEE1B97D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A99CF779-B7D6-49C4-BD1F-8236EEE1B97D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{563B6496-2E2F-4DF3-B7A0-03FEA5A36DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{563B6496-2E2F-4DF3-B7A0-03FEA5A36DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{563B6496-2E2F-4DF3-B7A0-03FEA5A36DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{563B6496-2E2F-4DF3-B7A0-03FEA5A36DA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1C4FD01-54BD-4A8A-82AB-594B838D5194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1C4FD01-54BD-4A8A-82AB-594B838D5194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1C4FD01-54BD-4A8A-82AB-594B838D5194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1C4FD01-54BD-4A8A-82AB-594B838D5194}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBB69C0D-C597-48C2-88BA-FA4AE5E458E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBB69C0D-C597-48C2-88BA-FA4AE5E458E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBB69C0D-C597-48C2-88BA-FA4AE5E458E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBB69C0D-C597-48C2-88BA-FA4AE5E458E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{180CBC9F-58EF-47F0-A609-6B21EDB04357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{180CBC9F-58EF-47F0-A609-6B21EDB04357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{180CBC9F-58EF-47F0-A609-6B21EDB04357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{180CBC9F-58EF-47F0-A609-6B21EDB04357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF8D50F-36E0-48B2-9F99-F18506E42949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF8D50F-36E0-48B2-9F99-F18506E42949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF8D50F-36E0-48B2-9F99-F18506E42949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF8D50F-36E0-48B2-9F99-F18506E42949}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,5 +57,10 @@ Global
 		SolutionGuid = {00CE27BF-42F8-4E9C-A21D-290684422CA8}
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{F1C4FD01-54BD-4A8A-82AB-594B838D5194} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
+		{BBB69C0D-C597-48C2-88BA-FA4AE5E458E5} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
+		{180CBC9F-58EF-47F0-A609-6B21EDB04357} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
+		{DCF8D50F-36E0-48B2-9F99-F18506E42949} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
+		{11C5BF93-24AF-408C-9564-19FE713C1BB7} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
 	EndGlobalSection
 EndGlobal

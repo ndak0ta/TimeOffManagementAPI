@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using TimeOffManagementAPI.Business.Interfaces;
 using MediatR;
 using TimeOffManagementAPI.Business.Users.Commands;
 

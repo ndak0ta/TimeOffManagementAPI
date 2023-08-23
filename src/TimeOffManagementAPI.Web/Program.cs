@@ -1,4 +1,7 @@
-﻿using TimeOffManagementAPI.Web.Extensions;
+﻿using Microsoft.EntityFrameworkCore;
+using TimeOffManagementAPI.Data.Access.Contexts;
+using TimeOffManagementAPI.Data.Access.Seeders;
+using TimeOffManagementAPI.Web.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +50,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+using var scope = app.Services.CreateScope();
+DbSeeder.Seed(scope.ServiceProvider);
 
 app.UseHttpsRedirection();
 

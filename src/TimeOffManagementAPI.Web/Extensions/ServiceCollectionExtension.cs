@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TimeOffManagementAPI.Web.Filters;
 using TimeOffManagementAPI.Business.BackgroundServices;
-using TimeOffManagementAPI.Business.Interfaces;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Repositories;
 using TimeOffManagementAPI.Data.Access.Interfaces;
@@ -33,7 +32,9 @@ public static class ServiceCollectionExtension
     public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<TimeOffManagementDBContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("TimeOffManagementDBContext")));
+            options
+            .UseSqlServer(configuration.GetConnectionString("TimeOffManagementDBContext"))
+        );
     }
 
     public static void AddCustomMvc(this IServiceCollection services)

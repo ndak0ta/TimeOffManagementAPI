@@ -15,13 +15,11 @@ namespace TimeOffManagementAPI.Web.Controllers;
 public class TimeOffController : ControllerBase
 {
     private readonly ILogger<TimeOffController> _logger;
-    private readonly ITimeOffService _timeOffService;
     private readonly IMediator _mediator;
 
-    public TimeOffController(ILogger<TimeOffController> logger, ITimeOffService timeOffService, IMediator mediator)
+    public TimeOffController(ILogger<TimeOffController> logger, IMediator mediator)
     {
         _logger = logger;
-        _timeOffService = timeOffService;
         _mediator = mediator;
     }
 
