@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Business.Users.Commands;
@@ -10,10 +11,12 @@ public record UpdaAnnualTimeOffCommand : IRequest<bool>;
 public class UpdaAnnualTimeOffCommandHandler : IRequestHandler<UpdaAnnualTimeOffCommand, bool>
 {
     private readonly UserManager<User> _userManager;
+    private readonly ILogger<UpdaAnnualTimeOffCommandHandler> _logger;
 
-    public UpdaAnnualTimeOffCommandHandler(UserManager<User> userManager)
+    public UpdaAnnualTimeOffCommandHandler(UserManager<User> userManager, ILogger<UpdaAnnualTimeOffCommandHandler> logger)
     {
         _userManager = userManager;
+        _logger = logger;
     }
 
     public async Task<bool> Handle(UpdaAnnualTimeOffCommand updaAnnualTimeOffCommand, CancellationToken cancellationToken)
@@ -34,6 +37,8 @@ public class UpdaAnnualTimeOffCommandHandler : IRequestHandler<UpdaAnnualTimeOff
             if (!result.Succeeded)
                 throw new Exception("Error while updating annual time off");
         }
+
+        _logger.LogInformation($"Annual time off updated successfully");
 
         return true;
     }

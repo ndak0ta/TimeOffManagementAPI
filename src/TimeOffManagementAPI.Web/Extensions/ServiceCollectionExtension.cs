@@ -73,6 +73,7 @@ public static class ServiceCollectionExtension
             o.User.RequireUniqueEmail = true;
             o.Lockout.MaxFailedAccessAttempts = 5;
             o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            o.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz0123456789-._@+";
         })
             .AddEntityFrameworkStores<TimeOffManagementDBContext>()
             .AddDefaultTokenProviders();

@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TimeOffManagementAPI.Data.Access.Contexts;
-using TimeOffManagementAPI.Data.Access.Seeders;
+﻿using TimeOffManagementAPI.Business.Seeders;
 using TimeOffManagementAPI.Web.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddJsonFile(builder.Configuration);
 
@@ -44,17 +41,21 @@ builder.Services.AddCustomCors();
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    using var scope = app.Services.CreateScope();
+    await DbSeeder.SeedDevelopment(scope.ServiceProvider);
 }
-
-using var scope = app.Services.CreateScope();
-DbSeeder.Seed(scope.ServiceProvider);
-
-app.UseHttpsRedirection();
+else if (app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+    using var scope = app.Services.CreateScope();
+    await DbSeeder.Seed(scope.ServiceProvider);
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

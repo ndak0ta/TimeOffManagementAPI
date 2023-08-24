@@ -53,7 +53,7 @@ public class CreateTimeOffCommandHandler : IRequestHandler<CreateTimeOffCommand,
         var user = await _mediator.Send(new GetUserByIdQuery(timeOff.UserId));
 
         if (timeOff.TotalDays > user.RemainingAnnualTimeOffs)
-            throw new UnprocessableEntityException("You don't have enough time off left");
+            throw new UnprocessableEntityException("You don't have enough time off left: " + user.RemainingAnnualTimeOffs);
 
         var CreatedTimeOff = await _timeOffRepository.CreateAsync(timeOff);
 

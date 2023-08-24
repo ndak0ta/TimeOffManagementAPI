@@ -28,7 +28,7 @@ public class GetTimeOffByUserIdQueryHandler : IRequestHandler<GetTimeOffByUserId
 
     public async Task<IEnumerable<TimeOffInfo>> Handle(GetTimeOffByUserIdQuery request, CancellationToken cancellationToken)
     {
-        var timeOffs = await _timeOffRepository.GetByUserIdAsync(request.Id);
+        var timeOffs = (await _timeOffRepository.GetByUserIdAsync(request.Id)).Where(t => t.IsActive);
 
         var timeOffInfos = _mapper.Map<IEnumerable<TimeOffInfo>>(timeOffs);
 

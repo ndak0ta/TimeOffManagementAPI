@@ -47,8 +47,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
             await _userManager.AddToRoleAsync(user, "Employee");
             await _mediator.Send(new SendEmailCommand(user.Email, "Your account has been created", $"Your username is {user.UserName} and your password is {password}"));
         }
+        else if (result.Errors.Any())
+        {
+            var message = result.Errors.Select(e => e.Description).ToList();
+            throw new Exception(string.Join(", ", message));
+        }
 
-        return await _mediator.Send(new GetUserByIdQuery(user.Id));
+        var userCreated = await _userManager.FindByNameAsync(user.UserName);
+        var userInfo = _mapper.Map<UserInfo>(userCreated);
+
+        return userInfo;
     }
 
     private string CeateUsername(string? firstName, string? lastName)
@@ -56,7 +64,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         if (firstName == null || lastName == null)
             throw new NullReferenceException("First name or last name is null");
 
-        var username = firstName.ToLower() + "." + lastName.ToLower();
+        var username = firstName.ToLower().Replace(" ", ".") + "." + lastName.ToLower();
+
+        username = username
+        .Replace("ç", "c")
+        .Replace("ğ", "g")
+        .Replace("ı", "i")
+        .Replace("İ", "i")
+        .Replace("ö", "o")
+        .Replace("ş", "s")
+        .Replace("ü", "u");
 
         var users = _userManager.Users.Where(u => u.UserName.StartsWith(username)).ToList();
 

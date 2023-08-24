@@ -9,11 +9,8 @@ COPY . ./
 # Restore as distinct layers
 RUN dotnet restore
 
-RUN dotnet dev-certs https --trust
-
 # Build and publish a release
 RUN dotnet publish -c Release -o /app/out
-
 
 # Build runtime image
 FROM --platform=arm64 mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
