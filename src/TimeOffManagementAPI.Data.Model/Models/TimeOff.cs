@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TimeOffManagementAPI.Data.Model.Constants;
 
 namespace TimeOffManagementAPI.Data.Model.Models;
 
@@ -7,11 +8,8 @@ public class TimeOff
 {
     public TimeOff()
     {
-        IsApproved = false;
-        IsPending = true;
+        Status = TimeOffStates.Pending;
         IsActive = true;
-        HasCancelRequest = false;
-        IsCancelled = false;
         CreatedAt = DateTime.Now;
         TotalDays = (EndDate - StartDate).Days;
     }
@@ -29,15 +27,9 @@ public class TimeOff
     public DateTime EndDate { get; set; }
 
     public int TotalDays { get; set; }
-
-    public bool IsApproved { get; set; }
-
-    public bool IsPending { get; set; }
+    public string? Status { get; set; }
 
     public bool IsActive { get; set; }
-    public bool HasCancelRequest { get; set; }
-
-    public bool IsCancelled { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

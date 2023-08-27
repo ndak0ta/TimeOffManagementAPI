@@ -50,6 +50,10 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserI
         if (!result.Succeeded)
             throw new Exception("Failed to update user");
 
-        return _mapper.Map<UserInfo>(user);
+        var userInfo = _mapper.Map<UserInfo>(user);
+
+        userInfo.Roles = await _userManager.GetRolesAsync(user);
+
+        return userInfo;
     }
 }

@@ -86,8 +86,8 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Roles = "Manager")]
-    [HttpPut("{id}/give-role")]
-    public async Task<IActionResult> AddRoleToUserAsync(string id, [FromBody] string role)
+    [HttpPatch("{id}/give-role/{role}")]
+    public async Task<IActionResult> AddRoleToUserAsync(string id, string role)
     {
         return Ok(await _mediator.Send(new AddRoleToUserCommand(id, role)));
     }

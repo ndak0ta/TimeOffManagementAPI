@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using TimeOffManagementAPI.Business.Email.Commands;
 using TimeOffManagementAPI.Business.Users.Commands;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Model.Constants;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Exceptions;
@@ -42,14 +43,13 @@ public class ApproveTimeOffCommandHandler : IRequestHandler<ApproveTimeOffComman
         var timeOff = await _timeOffRepository.GetByIdAsync(request.Id)
         ?? throw new NotFoundException("Time off not found");
 
-        timeOff.IsApproved = request.IsApproved;
-        timeOff.IsPending = false;
+        timeOff.Status = request.IsApproved ? TimeOffStates.Approved : TimeOffStates.Rejected;
 
         var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 
         var user = await _userManager.FindByIdAsync(updatedTimeOff.UserId);
 
-        if (updatedTimeOff.IsApproved)
+        if (updatedTimeOff.Status == TimeOffStates.Approved)
         {
             await _mediator.Send(new UpdateRemaningAnnualTimeOffCommand(user.Id));
             await _mediator.Send(new SendEmailCommand(user.Email, "Time off approved", $"Your time off request has been approved. You can check your time off requests from <a href='https://localhost:5001/timeoff'>here</a>"));

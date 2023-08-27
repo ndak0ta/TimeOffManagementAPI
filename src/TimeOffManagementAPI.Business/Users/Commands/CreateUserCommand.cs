@@ -2,7 +2,6 @@ using System.Text;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TimeOffManagementAPI.Business.Users.Queries;
 using TimeOffManagementAPI.Business.Email.Commands;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;

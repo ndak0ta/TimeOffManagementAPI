@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Model.Constants;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Exceptions;
 
@@ -33,13 +34,13 @@ public class DrawCancelRequestCommandHandler : IRequestHandler<DrawCancelRequest
     {
         var timeOff = await _timeOffRepository.GetByIdAsync(request.Id);
 
-        if (!timeOff.HasCancelRequest)
+        if (timeOff.Status == TimeOffStates.CancelRequested)
             throw new UnprocessableEntityException("You can only draw a cancel request");
 
         if (timeOff.UserId != request.UserId)
             throw new UnprocessableEntityException("You can only draw your own cancel request");
 
-        timeOff.HasCancelRequest = false;
+        timeOff.Status = TimeOffStates.Approved;
 
         var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 

@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Model.Constants;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Exceptions;
 
@@ -32,12 +33,10 @@ public class ApproveTimeOffCancelCommandHandler : IRequestHandler<ApproveTimeOff
         var timeOff = await _timeOffRepository.GetByIdAsync(request.TimeOffId)
         ?? throw new NotFoundException("Time off not found");
 
-        if (!timeOff.HasCancelRequest)
+        if (timeOff.Status != TimeOffStates.Cancelled)
             throw new UnprocessableEntityException("You can only approve a cancel request");
-            
-        timeOff.IsPending = false;
-        timeOff.IsApproved = false;
-        timeOff.HasCancelRequest = false;
+
+        timeOff.Status = TimeOffStates.Cancelled;
 
         var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 

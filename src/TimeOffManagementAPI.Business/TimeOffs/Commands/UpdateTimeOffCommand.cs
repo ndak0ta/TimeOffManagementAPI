@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using TimeOffManagementAPI.Business.Calendar.Commands;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Model.Constants;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Exceptions;
@@ -37,7 +38,7 @@ public class UpdateTimeOffCommandHandler : IRequestHandler<UpdateTimeOffCommand,
 
         timeOff.TotalDays = _mediator.Send(new CountDaysExcludingHolidaysCommand(timeOff.StartDate, timeOff.EndDate)).Result;
 
-        if (timeOff.IsApproved || !timeOff.IsPending && !timeOff.IsApproved)
+        if (timeOff.Status != TimeOffStates.Pending)
             throw new UnprocessableEntityException("You can't make changes on an approved or declined time off request");
 
         var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);

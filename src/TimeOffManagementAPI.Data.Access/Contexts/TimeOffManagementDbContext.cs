@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using TimeOffManagementAPI.Data.Model.Models;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace TimeOffManagementAPI.Data.Access.Contexts;
 

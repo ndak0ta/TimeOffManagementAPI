@@ -7,9 +7,7 @@ public class TimeOffInfo
     public DateTime? StartDate { get; init; }
     public DateTime? EndDate { get; init; }
     public int TotalDays { get; init; }
-    public bool IsPending { get; init; }
-    public bool IsApproved { get; init; }
-    public bool IsCancelled { get; init; }
+    public string? Status { get; init; }
     public DateTime? CreatedAt { get; init; }
-    public bool? HasCancelRequest { get; init; }
+    public string? UserId { get; init; }
 }

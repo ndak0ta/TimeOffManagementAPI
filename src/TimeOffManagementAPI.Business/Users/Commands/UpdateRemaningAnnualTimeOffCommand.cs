@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TimeOffManagementAPI.Data.Model.Constants;
 using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Business.Users.Commands;
@@ -36,7 +37,7 @@ public class UpdateRemaningAnnualTimeOffCommandHandler : IRequestHandler<UpdateR
 
         foreach (var timeOff in userWithTimeOffs.TimeOffs)
         {
-            if (timeOff.IsApproved && timeOff.StartDate.Year == DateTime.Now.Year)
+            if (timeOff.Status == TimeOffStates.Approved && timeOff.StartDate.Year == DateTime.Now.Year)
             {
                 timeOffLeft -= timeOff.TotalDays;
             }
