@@ -12,9 +12,11 @@ public record ApproveTimeOffCancelCommand : IRequest<TimeOffInfo>
     public ApproveTimeOffCancelCommand(int timeOffId, bool isApproved)
     {
         TimeOffId = timeOffId;
+        IsApproved = isApproved;
     }
 
     public int TimeOffId { get; set; }
+    public bool IsApproved { get; set; }
 }
 
 public class ApproveTimeOffCancelCommandHandler : IRequestHandler<ApproveTimeOffCancelCommand, TimeOffInfo>
@@ -33,10 +35,10 @@ public class ApproveTimeOffCancelCommandHandler : IRequestHandler<ApproveTimeOff
         var timeOff = await _timeOffRepository.GetByIdAsync(request.TimeOffId)
         ?? throw new NotFoundException("Time off not found");
 
-        if (timeOff.Status != TimeOffStates.Cancelled)
+        if (timeOff.Status == TimeOffStates.Cancelled)
             throw new UnprocessableEntityException("You can only approve a cancel request");
 
-        timeOff.Status = TimeOffStates.Cancelled;
+        timeOff.Status = request.IsApproved ? TimeOffStates.Cancelled : TimeOffStates.CancelRejected;
 
         var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 

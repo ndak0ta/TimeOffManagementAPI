@@ -7,4 +7,5 @@ public class TimeOffStates
     public const string Rejected = "Rejected";
     public const string CancelRequested = "Cancel Requested";
     public const string Cancelled = "Cancelled";
+    public const string CancelRejected = "Cancel Rejected";
 }

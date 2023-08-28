@@ -117,10 +117,10 @@ public class TimeOffController : ControllerBase
         return Ok(await _mediator.Send(new CancelTimeOffRequestCommand(id, userId)));
     }
 
-    [HttpPost("{id:int}/approve-cancel")]
-    public async Task<IActionResult> ApproveCancelRequestAsync(int id)
+    [HttpPost("{id:int}/approve-cancel/{isApproved:bool}")]
+    public async Task<IActionResult> ApproveCancelRequestAsync(int id, bool isApproved)
     {
-        return Ok(await _mediator.Send(new ApproveTimeOffCancelCommand(id, true)));
+        return Ok(await _mediator.Send(new ApproveTimeOffCancelCommand(id, isApproved)));
     }
 
     [HttpPost("{id:int}/cancel-draw")]

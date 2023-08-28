@@ -70,7 +70,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         else
         {
             await _userManager.AccessFailedAsync(user);
-            throw new ArgumentException("Username or password is incorrect.");
+            throw new UnauthorizedAccessException("Username or password is incorrect.");
         }
 
         var userInfo = _mapper.Map<UserInfo>(user);
