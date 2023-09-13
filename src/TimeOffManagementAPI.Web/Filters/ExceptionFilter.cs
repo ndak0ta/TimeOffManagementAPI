@@ -12,28 +12,16 @@ public class ExceptionFilter : IExceptionFilter
         var response = context.HttpContext.Response;
         response.ContentType = "application/json";
 
-        switch (context.Exception)
+        response.StatusCode = context.Exception switch
         {
-            case NotFoundException:
-                response.StatusCode = (int)HttpStatusCode.NotFound;
-                break;
-            case ArgumentNullException:
-                response.StatusCode = (int)HttpStatusCode.BadRequest;
-                break;
-            case DuplicateRecordException:
-                response.StatusCode = (int)HttpStatusCode.Conflict;
-                break;
-            case UnauthorizedAccessException:
-                response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                break;
-            case UnprocessableEntityException:
-                response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
-                break;
-            default:
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                break;
-        }
-
+            NotFoundException => (int)HttpStatusCode.NotFound,
+            ArgumentNullException => (int)HttpStatusCode.BadRequest,
+            DuplicateRecordException => (int)HttpStatusCode.Conflict,
+            UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+            UnprocessableEntityException => (int)HttpStatusCode.UnprocessableEntity,
+            _ => (int)HttpStatusCode.InternalServerError,
+        };
+        
         var result = JsonSerializer.Serialize(new
         {
             error = context.Exception.Message,

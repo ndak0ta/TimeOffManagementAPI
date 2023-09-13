@@ -17,8 +17,8 @@ public static class DbSeeder
 
         var roles = new List<Role>
         {
-            new Role { Name = "Manager" },
-            new Role { Name = "Employee" }
+            new() { Name = "Manager" },
+            new() { Name = "Employee" }
         };
 
         foreach (var role in roles)
@@ -31,7 +31,7 @@ public static class DbSeeder
 
         var users = new List<User>
         {
-            new User { UserName = "manager", Email = "manager@manager.com", EmailConfirmed = true },
+            new() { UserName = "manager", Email = "manager@manager.com", EmailConfirmed = true },
         };
 
         foreach (var user in users)
@@ -56,8 +56,8 @@ public static class DbSeeder
 
         var roles = new List<Role>
         {
-            new Role { Name = "Manager" },
-            new Role { Name = "Employee" }
+            new() { Name = "Manager" },
+            new() { Name = "Employee" }
         };
 
         foreach (var role in roles)
@@ -70,7 +70,7 @@ public static class DbSeeder
 
         var users = new List<User>
         {
-            new User {
+            new() {
                 UserName = "manager",
                 FirstName = "Manager",
                 LastName = "Manager",
@@ -80,7 +80,7 @@ public static class DbSeeder
                 DateOfBirth = DateTime.Now.AddYears(-30),
                 HireDate = DateTime.Now,
              },
-            new User {
+            new() {
                 UserName = "ali.ihsan.kahraman",
                 FirstName = "Ali İhsan",
                 LastName = "KAHRAMAN",
@@ -92,7 +92,7 @@ public static class DbSeeder
                 AnnualTimeOffs = 26,
                 RemainingAnnualTimeOffs = 26,
             },
-            new User {
+            new() {
                 UserName = "mehmet.karakus",
                 FirstName = "Mehmet",
                 LastName = "KARAKUŞ",
@@ -101,6 +101,54 @@ public static class DbSeeder
                 PhoneNumber = "+905381231234",
                 DateOfBirth = DateTime.TryParse("1996-05-12", out dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-21),
                 HireDate = DateTime.TryParse("2004-03-27", out hireDate) ? hireDate : DateTime.Now,
+                AnnualTimeOffs = 20,
+                RemainingAnnualTimeOffs = 20,
+            },
+            new() {
+                UserName = "ahmet.oz",
+                FirstName = "Ahmet",
+                LastName = "ÖZ",
+                Email = "ahmetoz@gmail.com",
+                Address = "İstanbul",
+                PhoneNumber = "+905381231234",
+                DateOfBirth = DateTime.TryParse("1989-08-22", out dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-33),
+                HireDate = DateTime.TryParse("2010-01-01", out hireDate) ? hireDate : DateTime.Now,
+                AnnualTimeOffs = 20,
+                RemainingAnnualTimeOffs = 20,
+            },
+            new() {
+                UserName = "mehmet.oz",
+                FirstName = "Mehmet",
+                LastName = "ÖZ",
+                Email = "mehmetoz@gmail.com",
+                Address = "İzmir",
+                PhoneNumber = "+905381231234",
+                DateOfBirth = DateTime.TryParse("1990-01-01", out dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-31),
+                HireDate = DateTime.TryParse("2014-04-09", out hireDate) ? hireDate : DateTime.Now,
+                AnnualTimeOffs = 20,
+                RemainingAnnualTimeOffs = 20,
+            },
+            new() {
+                UserName = "ayse.kaya",
+                FirstName = "Ayşe",
+                LastName = "KAYA",
+                Email = "aysekaya@hotmail.com",
+                Address = "Kocaeli",
+                PhoneNumber = "+905381231234",
+                DateOfBirth = DateTime.TryParse("1995-12-31", out dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-26),
+                HireDate = DateTime.TryParse("2018-01-01", out hireDate) ? hireDate : DateTime.Now,
+                AnnualTimeOffs = 20,
+                RemainingAnnualTimeOffs = 20,
+            },
+            new() {
+                UserName = "fatma.saracoglu",
+                FirstName = "Fatma",
+                LastName = "SARAÇOĞLU",
+                Email = "srcoglu.fatma@yahoo.com",
+                Address = "İstanbul",
+                PhoneNumber = "+905381231234",
+                DateOfBirth = DateTime.TryParse("1998-01-01", out dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-23),
+                HireDate = DateTime.TryParse("2021-01-01", out hireDate) ? hireDate : DateTime.Now,
                 AnnualTimeOffs = 20,
                 RemainingAnnualTimeOffs = 20,
             },
@@ -127,22 +175,22 @@ public static class DbSeeder
 
         var timeOffs = new List<TimeOffRequest>
         {
-            new TimeOffRequest {
+            new() {
                 UserId = user1.Id,
                 StartDate = DateTime.Now.AddDays(10),
                 EndDate = DateTime.Now.AddDays(15),
             },
-            new TimeOffRequest {
+            new() {
                 UserId = user2.Id,
                 StartDate = DateTime.Now.AddDays(20),
                 EndDate = DateTime.Now.AddDays(25),
             },
-            new TimeOffRequest {
+            new() {
                 UserId = user1.Id,
                 StartDate = DateTime.Now.AddDays(30),
                 EndDate = DateTime.Now.AddDays(35),
             },
-            new TimeOffRequest {
+            new() {
                 UserId = user2.Id,
                 StartDate = DateTime.Now.AddDays(40),
                 EndDate = DateTime.Now.AddDays(45),

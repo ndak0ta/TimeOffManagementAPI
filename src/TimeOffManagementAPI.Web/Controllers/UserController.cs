@@ -95,7 +95,9 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
-        return Ok(await _mediator.Send(new DeleteUserCommand(id)));
+        var result = await _mediator.Send(new DeleteUserCommand(id));
+
+        return Ok(new { result });
     }
 
     [HttpPost("change-password")]

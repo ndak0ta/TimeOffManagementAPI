@@ -9,5 +9,6 @@ public class UserUpdateContact
     [Required(ErrorMessage = "Email is required")]
     public string? Email { get; init; }
 
+    [MaxLength(19)]
     public string? PhoneNumber { get; init; }
 }

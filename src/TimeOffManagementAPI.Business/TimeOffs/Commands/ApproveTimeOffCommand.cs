@@ -51,12 +51,12 @@ public class ApproveTimeOffCommandHandler : IRequestHandler<ApproveTimeOffComman
 
         if (updatedTimeOff.Status == TimeOffStates.Approved)
         {
-            await _mediator.Send(new UpdateRemaningAnnualTimeOffCommand(user.Id));
-            await _mediator.Send(new SendEmailCommand(user.Email, "Time off approved", $"Your time off request has been approved. You can check your time off requests from <a href='https://localhost:5001/timeoff'>here</a>"));
+            await _mediator.Send(new UpdateRemaningAnnualTimeOffCommand(user.Id), cancellationToken);
+            await _mediator.Send(new SendEmailCommand(user.Email, "Time off approved", $"Your time off request has been approved. You can check your time off requests from <a href='https://localhost:5001/timeoff'>here</a>"), cancellationToken);
         }
         else
         {
-            await _mediator.Send(new SendEmailCommand(user.Email, "Time off rejected", $"Your time off request has been rejected. You can check your time off requests from <a href='https://localhost:5001/timeoff'>here</a>"));
+            await _mediator.Send(new SendEmailCommand(user.Email, "Time off rejected", $"Your time off request has been rejected. You can check your time off requests from <a href='https://localhost:5001/timeoff'>here</a>"), cancellationToken);
         }
 
         return _mapper.Map<TimeOffInfo>(updatedTimeOff);

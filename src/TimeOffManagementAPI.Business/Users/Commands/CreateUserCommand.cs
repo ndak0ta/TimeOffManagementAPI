@@ -79,7 +79,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         if (users.Count == 0)
             return username;
 
-        return username + users.Count;
+        return username + users.Count + 1;
     }
 
     private string CreatePassword(int length)

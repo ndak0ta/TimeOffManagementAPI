@@ -16,6 +16,7 @@ public class UserUpdate
 
     public string? Email { get; init; }
 
+    [MaxLength(19)]
     public string? PhoneNumber { get; init; }
 
     public string? Address { get; init; }

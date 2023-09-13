@@ -30,7 +30,7 @@ public class UpdaAnnualTimeOffCommandHandler : IRequestHandler<UpdaAnnualTimeOff
 
             decimal workYear = (DateTime.Now - user.HireDate).Days / 365;
 
-            user.AnnualTimeOffs = Convert.ToInt32(workYear > 15 ? 26 : workYear > 5 ? 20 : workYear > 1 ? 14 : 0);
+            user.AnnualTimeOffs = Convert.ToInt32(workYear > 14 ? 26 : workYear > 5 ? 20 : workYear > 1 ? 14 : 0);
 
             var result = await _userManager.UpdateAsync(user);
 

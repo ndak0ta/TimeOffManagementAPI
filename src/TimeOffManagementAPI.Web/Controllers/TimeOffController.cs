@@ -90,13 +90,12 @@ public class TimeOffController : ControllerBase
         return Ok(await _mediator.Send(new UpdateTimeOffCommand(timeOffUpdate)));
     }
 
-
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
-        await _mediator.Send(new DeleteTimeOffCommand(id));
+        var result = await _mediator.Send(new DeleteTimeOffCommand(id));
 
-        return NoContent();
+        return Ok(new { result });
     }
 
     [Authorize(Roles = "Manager")]

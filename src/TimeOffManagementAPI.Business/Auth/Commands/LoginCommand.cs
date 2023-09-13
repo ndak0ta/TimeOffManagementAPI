@@ -65,7 +65,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         {
             var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
             var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
-            throw new ArgumentException($"Your account is locked out. Please try again {timeLeft} minutes later.");
+            throw new UnauthorizedAccessException($"Your account is locked out. Please try again {timeLeft} minutes later.");
         }
         else
         {
@@ -90,9 +90,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         var audience = _configuration["Jwt:Audience"];
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(), ClaimValueTypes.Integer64)
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(), ClaimValueTypes.Integer64)
         };
 
         _userManager.GetRolesAsync(user).Result.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
