@@ -34,7 +34,7 @@ public class DrawCancelRequestCommandHandler : IRequestHandler<DrawCancelRequest
     {
         var timeOff = await _timeOffRepository.GetByIdAsync(request.Id);
 
-        if (timeOff.Status == TimeOffStates.CancelRequested)
+        if (timeOff.Status != TimeOffStates.CancelRequested)
             throw new UnprocessableEntityException("You can only draw a cancel request");
 
         if (timeOff.UserId != request.UserId)

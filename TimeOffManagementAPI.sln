@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		dockerfile = dockerfile
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4B6B2AC1-4395-43F2-9A5A-8C2ABCF5CDF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeOffManagement.Business.UnitTests", "tests\TimeOffManagement.Business.UnitTests\TimeOffManagement.Business.UnitTests.csproj", "{E9D97518-9654-4654-A25B-751D75B1CFF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,10 @@ Global
 		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11C5BF93-24AF-408C-9564-19FE713C1BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9D97518-9654-4654-A25B-751D75B1CFF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9D97518-9654-4654-A25B-751D75B1CFF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9D97518-9654-4654-A25B-751D75B1CFF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9D97518-9654-4654-A25B-751D75B1CFF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,5 +76,6 @@ Global
 		{180CBC9F-58EF-47F0-A609-6B21EDB04357} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
 		{DCF8D50F-36E0-48B2-9F99-F18506E42949} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
 		{11C5BF93-24AF-408C-9564-19FE713C1BB7} = {158949DA-B131-4E47-98BD-D64DE209EB1C}
+		{E9D97518-9654-4654-A25B-751D75B1CFF3} = {4B6B2AC1-4395-43F2-9A5A-8C2ABCF5CDF8}
 	EndGlobalSection
 EndGlobal

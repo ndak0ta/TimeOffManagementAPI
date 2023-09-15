@@ -36,24 +36,25 @@ public class CreateTimeOffCommandHandler : IRequestHandler<CreateTimeOffCommand,
     {
         var timeOff = _mapper.Map<TimeOff>(request.TimeOffRequest);
 
-        if (!(timeOff.StartDate.Year == DateTime.UtcNow.Year && timeOff.EndDate.Year == DateTime.UtcNow.Year))
-            throw new ArgumentException("Start date and end date must be in the same year");
-
         if (timeOff.StartDate < DateTime.UtcNow)
             throw new ArgumentException("Start date must be in the future");
 
-        timeOff.TotalDays = _mediator.Send(new CountDaysExcludingHolidaysCommand(timeOff.StartDate, timeOff.EndDate)).Result;
+        if (timeOff.StartDate > timeOff.EndDate)
+            throw new ArgumentException("Start date must be before end date");
+
+        if (!(timeOff.StartDate.Year == DateTime.UtcNow.Year && timeOff.EndDate.Year == DateTime.UtcNow.Year))
+            throw new ArgumentException("Start date and end date must be in the same year");
+
+        timeOff.TotalDays = _mediator.Send(new CountDaysExcludingHolidaysCommand(timeOff.StartDate, timeOff.EndDate), cancellationToken).Result;
 
         if (timeOff.UserId == null)
             throw new ArgumentException("User id is required");
 
-        if (timeOff.TotalDays < 0)
-            throw new ArgumentException("Start date must be before end date");
 
-        var user = await _mediator.Send(new GetUserByIdQuery(timeOff.UserId));
+        var user = await _mediator.Send(new GetUserByIdQuery(timeOff.UserId), cancellationToken);
 
         if (timeOff.TotalDays > user.RemainingAnnualTimeOffs)
-            throw new UnprocessableEntityException("You don't have enough time off left: " + user.RemainingAnnualTimeOffs);
+            throw new UnprocessableEntityException("You don't have enough time off left");
 
         var CreatedTimeOff = await _timeOffRepository.CreateAsync(timeOff);
 

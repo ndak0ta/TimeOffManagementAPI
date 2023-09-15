@@ -14,6 +14,7 @@ using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Mappings;
 using TimeOffManagementAPI.Data.Model.Models;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using TimeOffManagementAPI.Business.Auth.Commands;
 
@@ -52,13 +53,7 @@ public static class ServiceCollectionExtension
 
     public static void AddMapper(this IServiceCollection services)
     {
-        var mapperConfig = new MapperConfiguration(map =>
-        {
-            map.AddProfile<UserMappingProfile>();
-            map.AddProfile<TimeOffMappingProfile>();
-        });
-
-        services.AddSingleton(mapperConfig.CreateMapper());
+        services.AddAutoMapper(typeof(TimeOffMappingProfile));
     }
 
     public static void AddIdentity(this IServiceCollection services)

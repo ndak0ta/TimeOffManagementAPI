@@ -1,4 +1,4 @@
-FROM --platform=arm64 mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
 EXPOSE 7064:7064
@@ -13,7 +13,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o /app/out
 
 # Build runtime image
-FROM --platform=arm64 mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
 COPY --from=build-env /app/out .
 

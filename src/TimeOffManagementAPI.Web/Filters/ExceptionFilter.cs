@@ -16,6 +16,7 @@ public class ExceptionFilter : IExceptionFilter
         {
             NotFoundException => (int)HttpStatusCode.NotFound,
             ArgumentNullException => (int)HttpStatusCode.BadRequest,
+            ArgumentException => (int)HttpStatusCode.BadRequest,
             DuplicateRecordException => (int)HttpStatusCode.Conflict,
             UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
             UnprocessableEntityException => (int)HttpStatusCode.UnprocessableEntity,

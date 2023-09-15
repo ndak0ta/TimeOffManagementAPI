@@ -30,8 +30,6 @@ public class GetTimeOffByUserIdQueryHandler : IRequestHandler<GetTimeOffByUserId
     {
         var timeOffs = (await _timeOffRepository.GetByUserIdAsync(request.Id)).Where(t => t.IsActive);
 
-        var timeOffInfos = _mapper.Map<IEnumerable<TimeOffInfo>>(timeOffs);
-
-        return timeOffInfos;
+        return _mapper.Map<IEnumerable<TimeOffInfo>>(timeOffs);
     }
 }

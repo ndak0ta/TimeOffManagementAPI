@@ -22,15 +22,6 @@ public class GetAllTimeOffsQueryHandler : IRequestHandler<GetAllTimeOffsQuery, I
     {
         var timeOffs = (await _timeOffRepository.GetAllAsync()).Where(t => t.IsActive);
 
-        var timeOffInfos = new List<TimeOffInfo>();
-
-        foreach (var timeOff in timeOffs)
-        {
-            var timeOffInfo = _mapper.Map<TimeOffInfo>(timeOff);
-
-            timeOffInfos.Add(timeOffInfo);
-        }
-
-        return timeOffInfos;
+        return _mapper.Map<IEnumerable<TimeOffInfo>>(timeOffs);
     }
 }
