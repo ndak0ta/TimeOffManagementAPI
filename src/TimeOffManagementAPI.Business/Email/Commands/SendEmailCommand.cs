@@ -68,6 +68,6 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand>
             IsBodyHtml = true
         };
 
-        await client.SendMailAsync(message);
+        await client.SendMailAsync(message, cancellationToken);
     }
 }

@@ -44,7 +44,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Employee");
-            await _mediator.Send(new SendEmailCommand(user.Email, "Your account has been created", $"Your username is {user.UserName} and your password is {password}"));
+            await _mediator.Send(new SendEmailCommand(user.Email, "Your account has been created", $"Your username is {user.UserName} and your password is {password}"), cancellationToken);
         }
         else if (result.Errors.Any())
         {
@@ -53,9 +53,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         }
 
         var userCreated = await _userManager.FindByNameAsync(user.UserName);
-        var userInfo = _mapper.Map<UserInfo>(userCreated);
-
-        return userInfo;
+        return _mapper.Map<UserInfo>(userCreated);
     }
 
     private string CeateUsername(string? firstName, string? lastName)
@@ -79,7 +77,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         if (users.Count == 0)
             return username;
 
-        return username + users.Count + 1;
+        return username + users.Count;
     }
 
     private string CreatePassword(int length)

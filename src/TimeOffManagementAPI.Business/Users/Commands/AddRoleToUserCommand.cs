@@ -21,13 +21,11 @@ public record AddRoleToUserCommand : IRequest<UserInfo>
 public class AddRoleToUserCommandHandler : IRequestHandler<AddRoleToUserCommand, UserInfo>
 {
     private readonly UserManager<User> _userManager;
-    private readonly RoleManager<Role> _roleManager;
     private readonly IMediator _mediator;
 
-    public AddRoleToUserCommandHandler(UserManager<User> userManager, RoleManager<Role> roleManager, IMediator mediator)
+    public AddRoleToUserCommandHandler(UserManager<User> userManager, IMediator mediator)
     {
         _userManager = userManager;
-        _roleManager = roleManager;
         _mediator = mediator;
     }
 
@@ -39,7 +37,7 @@ public class AddRoleToUserCommandHandler : IRequestHandler<AddRoleToUserCommand,
 
         await _userManager.AddToRoleAsync(user, addRoleToUserCommand.RoleName);
 
-        return await _mediator.Send(new GetUserByIdQuery(user.Id));
+        return await _mediator.Send(new GetUserByIdQuery(user.Id), cancellationToken);
     }
 }
 
