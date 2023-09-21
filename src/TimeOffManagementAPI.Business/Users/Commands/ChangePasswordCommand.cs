@@ -26,13 +26,13 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
 
     public async Task<bool> Handle(ChangePasswordCommand changePasswordCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(changePasswordCommand.UserChangePassword?.Id)
+        User user = await _userManager.FindByIdAsync(changePasswordCommand.UserChangePassword?.Id)
         ?? throw new ArgumentNullException(nameof(changePasswordCommand.UserChangePassword), "User not found");
 
         if (!await _userManager.CheckPasswordAsync(user, changePasswordCommand.UserChangePassword?.OldPassword))
             throw new UnauthorizedAccessException("Password is incorrect");
 
-        var result = await _userManager.ChangePasswordAsync(
+        IdentityResult result = await _userManager.ChangePasswordAsync(
             user,
             changePasswordCommand.UserChangePassword?.OldPassword,
             changePasswordCommand.UserChangePassword?.NewPassword

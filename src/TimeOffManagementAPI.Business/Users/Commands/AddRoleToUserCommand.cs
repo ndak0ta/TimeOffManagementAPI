@@ -31,7 +31,7 @@ public class AddRoleToUserCommandHandler : IRequestHandler<AddRoleToUserCommand,
 
     public async Task<UserInfo> Handle(AddRoleToUserCommand addRoleToUserCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(addRoleToUserCommand.UserId);
+        User user = await _userManager.FindByIdAsync(addRoleToUserCommand.UserId);
 
         await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
 

@@ -1,5 +1,3 @@
-using TimeOffManagementAPI.Data.Model.Models;
-
 namespace TimeOffManagementAPI.Data.Model.Dtos;
 
 public class UserInfo

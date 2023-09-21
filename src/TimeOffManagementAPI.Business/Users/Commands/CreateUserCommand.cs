@@ -1,7 +1,7 @@
-using System.Text;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Text;
 using TimeOffManagementAPI.Business.Email.Commands;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
@@ -33,13 +33,13 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
 
     public async Task<UserInfo> Handle(CreateUserCommand createUserCommand, CancellationToken cancellationToken)
     {
-        var user = _mapper.Map<User>(createUserCommand.UserRegistration);
+        User user = _mapper.Map<User>(createUserCommand.UserRegistration);
 
         user.UserName = CeateUsername(createUserCommand.UserRegistration?.FirstName, createUserCommand.UserRegistration?.LastName);
 
-        var password = CreatePassword(8);
+        string password = CreatePassword(8);
 
-        var result = await _userManager.CreateAsync(user, password);
+        IdentityResult result = await _userManager.CreateAsync(user, password);
 
         if (result.Succeeded)
         {
@@ -48,11 +48,11 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         }
         else if (result.Errors.Any())
         {
-            var message = result.Errors.Select(e => e.Description).ToList();
+            List<string> message = result.Errors.Select(e => e.Description).ToList();
             throw new Exception(string.Join(", ", message));
         }
 
-        var userCreated = await _userManager.FindByNameAsync(user.UserName);
+        User userCreated = await _userManager.FindByNameAsync(user.UserName);
         return _mapper.Map<UserInfo>(userCreated);
     }
 
@@ -61,7 +61,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         if (firstName == null || lastName == null)
             throw new NullReferenceException("First name or last name is null");
 
-        var username = firstName.ToLower().Replace(" ", ".") + "." + lastName.ToLower();
+        string username = firstName.ToLower().Replace(" ", ".") + "." + lastName.ToLower();
 
         username = username
         .Replace("ç", "c")
@@ -72,7 +72,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserI
         .Replace("ş", "s")
         .Replace("ü", "u");
 
-        var users = _userManager.Users.Where(u => u.UserName.StartsWith(username)).ToList();
+        List<User> users = _userManager.Users.Where(u => u.UserName.StartsWith(username)).ToList();
 
         if (users.Count == 0)
             return username;

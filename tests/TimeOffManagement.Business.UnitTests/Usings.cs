@@ -1,4 +1,4 @@
-global using Xunit;
+global using AutoMapper;
 global using MediatR;
 global using Moq;
-global using AutoMapper;
+global using Xunit;

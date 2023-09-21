@@ -29,7 +29,7 @@ public class UpdateUserContactCommandHandler : IRequestHandler<UpdateUserContact
 
     public async Task<UserInfo> Handle(UpdateUserContactCommand updateUserContactCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(updateUserContactCommand.UserUpdateContact.Id);
+        User user = await _userManager.FindByIdAsync(updateUserContactCommand.UserUpdateContact.Id);
 
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -37,7 +37,7 @@ public class UpdateUserContactCommandHandler : IRequestHandler<UpdateUserContact
         user.Email = updateUserContactCommand.UserUpdateContact.Email ?? user.Email;
         user.PhoneNumber = updateUserContactCommand.UserUpdateContact.PhoneNumber ?? user.PhoneNumber;
 
-        var result = await _userManager.UpdateAsync(user);
+        IdentityResult result = await _userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             throw new Exception("Failed to update user");

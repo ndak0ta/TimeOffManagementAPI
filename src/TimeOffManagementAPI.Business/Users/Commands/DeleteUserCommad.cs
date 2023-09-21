@@ -25,14 +25,14 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, bool>
 
     public async Task<bool> Handle(DeleteUserCommand deleteUserCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(deleteUserCommand.UserId);
+        User user = await _userManager.FindByIdAsync(deleteUserCommand.UserId);
 
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
         user.IsActive = false;
 
-        var result = await _userManager.UpdateAsync(user);
+        IdentityResult result = await _userManager.UpdateAsync(user);
 
         return result.Succeeded;
     }

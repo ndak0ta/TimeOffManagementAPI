@@ -1,5 +1,5 @@
-using System.Globalization;
 using MediatR;
+using System.Globalization;
 
 namespace TimeOffManagementAPI.Business.Calendar.Commands;
 
@@ -12,10 +12,10 @@ public class GetEidAlAdhaDatesCommandHandler : IRequestHandler<GetEidAlAdhaDates
     public Task<List<DateTime>> Handle(GetEidAlAdhaDatesCommand request, CancellationToken cancellationToken)
     {
         int year = DateTime.UtcNow.Year;
-        var islamicCalendar = new HijriCalendar();
+        HijriCalendar islamicCalendar = new();
         int month = islamicCalendar.GetMonth(new DateTime(year, 12, 1));
 
-        List<DateTime> eidAlAdhaDates = new List<DateTime>();
+        List<DateTime> eidAlAdhaDates = new();
 
         while (month != 12)
         {

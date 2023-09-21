@@ -27,7 +27,7 @@ public class UpdateRemaningAnnualTimeOffCommandHandler : IRequestHandler<UpdateR
 
     public async Task<IdentityResult> Handle(UpdateRemaningAnnualTimeOffCommand updateRemaningAnnualTimeOffCommand, CancellationToken cancellationToken)
     {
-        var userWithTimeOffs = await _userManager.Users.Include(u => u.TimeOffs).FirstOrDefaultAsync(u => u.Id == updateRemaningAnnualTimeOffCommand.UserId)
+        User userWithTimeOffs = await _userManager.Users.Include(u => u.TimeOffs).FirstOrDefaultAsync(u => u.Id == updateRemaningAnnualTimeOffCommand.UserId)
         ?? throw new NullReferenceException("User not found");
 
         int timeOffLeft = userWithTimeOffs.AnnualTimeOffs;
@@ -35,7 +35,7 @@ public class UpdateRemaningAnnualTimeOffCommandHandler : IRequestHandler<UpdateR
         if (userWithTimeOffs.TimeOffs == null)
             return IdentityResult.Success;
 
-        foreach (var timeOff in userWithTimeOffs.TimeOffs)
+        foreach (TimeOff timeOff in userWithTimeOffs.TimeOffs)
         {
             if (timeOff.Status == TimeOffStates.Approved && timeOff.StartDate.Year == DateTime.Now.Year)
             {

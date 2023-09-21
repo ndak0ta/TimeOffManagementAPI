@@ -20,7 +20,7 @@ public class GetAllTimeOffsQueryHandler : IRequestHandler<GetAllTimeOffsQuery, I
 
     public async Task<IEnumerable<TimeOffInfo>> Handle(GetAllTimeOffsQuery request, CancellationToken cancellationToken)
     {
-        var timeOffs = (await _timeOffRepository.GetAllAsync()).Where(t => t.IsActive);
+        IEnumerable<Data.Model.Models.TimeOff> timeOffs = (await _timeOffRepository.GetAllAsync()).Where(t => t.IsActive);
 
         return _mapper.Map<IEnumerable<TimeOffInfo>>(timeOffs);
     }

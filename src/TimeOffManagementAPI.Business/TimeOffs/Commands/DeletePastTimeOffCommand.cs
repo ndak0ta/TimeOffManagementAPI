@@ -1,5 +1,6 @@
 using MediatR;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Business.TimeOffs.Commands;
 
@@ -16,9 +17,9 @@ public class DeletePastTimeOffCommandHandler : IRequestHandler<DeletePastTimeOff
 
     public async Task Handle(DeletePastTimeOffCommand request, CancellationToken cancellationToken)
     {
-        var timeOffs = await _timeOffRepository.GetAllAsync();
+        IEnumerable<TimeOff> timeOffs = await _timeOffRepository.GetAllAsync();
 
-        foreach (var timeOff in timeOffs)
+        foreach (TimeOff timeOff in timeOffs)
         {
             if (timeOff.EndDate < DateTime.Now)
             {

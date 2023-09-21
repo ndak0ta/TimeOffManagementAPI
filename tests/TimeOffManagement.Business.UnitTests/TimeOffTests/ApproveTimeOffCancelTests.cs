@@ -14,10 +14,10 @@ public class ApproveTimeOffCancelTests
     public async Task ApproveTimeOffCancelCommandHandler_WhenTimeOffIsNotFound_ThrowsNotFoundException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
-        var command = new ApproveTimeOffCancelCommand(1, true);
-        var handler = new ApproveTimeOffCancelCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
+        ApproveTimeOffCancelCommand command = new(1, true);
+        ApproveTimeOffCancelCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((TimeOff)null!);
 
@@ -25,7 +25,7 @@ public class ApproveTimeOffCancelTests
         async Task act() => await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        var exc = await Assert.ThrowsAsync<NotFoundException>(act);
+        NotFoundException exc = await Assert.ThrowsAsync<NotFoundException>(act);
         Assert.Equal("Time off not found", exc.Message);
     }
 
@@ -33,10 +33,10 @@ public class ApproveTimeOffCancelTests
     public async Task ApproveTimeOffCancelCommandHandler_WhenTimeOffStatusIsCancelled_ThrowsUnprocessableEntityException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
-        var command = new ApproveTimeOffCancelCommand(1, true);
-        var handler = new ApproveTimeOffCancelCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
+        ApproveTimeOffCancelCommand command = new(1, true);
+        ApproveTimeOffCancelCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new TimeOff
         {
@@ -47,7 +47,7 @@ public class ApproveTimeOffCancelTests
         async Task act() => await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        var exc = await Assert.ThrowsAsync<UnprocessableEntityException>(act);
+        UnprocessableEntityException exc = await Assert.ThrowsAsync<UnprocessableEntityException>(act);
         Assert.Equal("You can only approve a cancel request", exc.Message);
     }
 
@@ -55,10 +55,10 @@ public class ApproveTimeOffCancelTests
     public async Task ApproveTimeOffCancelCommandHandler_WhenTimeOffStatusIsNotCancelled_ReturnsTimeOffInfo()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
-        var command = new ApproveTimeOffCancelCommand(1, true);
-        var handler = new ApproveTimeOffCancelCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
+        ApproveTimeOffCancelCommand command = new(1, true);
+        ApproveTimeOffCancelCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new TimeOff
         {
@@ -71,7 +71,7 @@ public class ApproveTimeOffCancelTests
         mapperMock.Setup(x => x.Map<TimeOffInfo>(It.IsAny<TimeOff>())).Returns(new TimeOffInfo());
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        TimeOffInfo result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.IsType<TimeOffInfo>(result);
@@ -82,10 +82,10 @@ public class ApproveTimeOffCancelTests
     public async Task ApproveTimeOffCancelCommandHandler_WhenTimeOffStatusIsNotCancelledAndIsApprovedIsFalse_ReturnsTimeOffInfo()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
-        var command = new ApproveTimeOffCancelCommand(1, false);
-        var handler = new ApproveTimeOffCancelCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
+        ApproveTimeOffCancelCommand command = new(1, false);
+        ApproveTimeOffCancelCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new TimeOff
         {
@@ -99,7 +99,7 @@ public class ApproveTimeOffCancelTests
         mapperMock.Setup(x => x.Map<TimeOffInfo>(It.IsAny<TimeOff>())).Returns(new TimeOffInfo());
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        TimeOffInfo result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.IsType<TimeOffInfo>(result);

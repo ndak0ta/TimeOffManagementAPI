@@ -1,5 +1,5 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Exceptions;
 
@@ -28,7 +28,7 @@ namespace TimeOffManagementAPI.Data.Access.Abstractions
         {
             if (DbSet != null)
             {
-                var result = await DbSet.FindAsync(id);
+                TEntity? result = await DbSet.FindAsync(id);
 
                 if (result == null)
                     throw new NotFoundException($"No entity found with id {id}.");
@@ -63,7 +63,7 @@ namespace TimeOffManagementAPI.Data.Access.Abstractions
         {
             if (DbSet != null)
             {
-                var result = await DbSet.AddAsync(entity);
+                Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity> result = await DbSet.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
                 return result.Entity;
@@ -76,7 +76,7 @@ namespace TimeOffManagementAPI.Data.Access.Abstractions
         {
             if (DbSet != null)
             {
-                var result = DbSet.Update(entity);
+                Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity> result = DbSet.Update(entity);
                 await _context.SaveChangesAsync();
 
                 return result.Entity;
@@ -89,7 +89,7 @@ namespace TimeOffManagementAPI.Data.Access.Abstractions
         {
             if (DbSet != null)
             {
-                var result = await DbSet.FindAsync(id);
+                TEntity? result = await DbSet.FindAsync(id);
 
                 if (result == null)
                     throw new NotFoundException($"No entity found with id {id}.");

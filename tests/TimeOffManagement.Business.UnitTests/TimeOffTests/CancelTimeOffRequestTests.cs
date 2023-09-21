@@ -13,14 +13,14 @@ public class CancelTimeOffRequestTests
     public async Task CancelTimeOffRequest_WhenTimeOffIsNotFound_ThrowsNotFoundException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
             .ReturnsAsync((TimeOff)null!);
 
-        var mediatorMock = new Mock<IMediator>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<IMediator> mediatorMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var handler = new CancelTimeOffRequestCommandHandler(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
+        CancelTimeOffRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
 
         // Act
         async Task act() => await handler.Handle(new CancelTimeOffRequestCommand(1, "userId"), CancellationToken.None);
@@ -33,20 +33,20 @@ public class CancelTimeOffRequestTests
     public async Task CancelTimeOffRequest_WhenTimeOffIsNotApproved_ThrowsUnprocessableEntityException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
             .ReturnsAsync(new TimeOff { Status = TimeOffStates.Pending });
 
-        var mediatorMock = new Mock<IMediator>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<IMediator> mediatorMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var handler = new CancelTimeOffRequestCommandHandler(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
+        CancelTimeOffRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
 
         // Act
         async Task act() => await handler.Handle(new CancelTimeOffRequestCommand(1, "userId"), CancellationToken.None);
 
         // Assert
-        var exc = await Assert.ThrowsAsync<UnprocessableEntityException>(act);
+        UnprocessableEntityException exc = await Assert.ThrowsAsync<UnprocessableEntityException>(act);
 
         Assert.Equal("You can only cancel an approved time off", exc.Message);
     }
@@ -55,20 +55,20 @@ public class CancelTimeOffRequestTests
     public async Task CancelTimeOffRequest_WhenTimeOffIsNotOwnedByUser_ThrowsUnprocessableEntityException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
             .ReturnsAsync(new TimeOff { Status = TimeOffStates.Approved, UserId = "otherUserId" });
 
-        var mediatorMock = new Mock<IMediator>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<IMediator> mediatorMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var handler = new CancelTimeOffRequestCommandHandler(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
+        CancelTimeOffRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
 
         // Act
         async Task act() => await handler.Handle(new CancelTimeOffRequestCommand(1, "userId"), CancellationToken.None);
 
         // Assert
-        var exc = await Assert.ThrowsAsync<UnprocessableEntityException>(act);
+        UnprocessableEntityException exc = await Assert.ThrowsAsync<UnprocessableEntityException>(act);
 
         Assert.Equal("You can only send a cancel request for your own time off", exc.Message);
     }
@@ -77,23 +77,23 @@ public class CancelTimeOffRequestTests
     public async Task CancelTimeOffRequest_WhenTimeOffIsApprovedAndOwnedByUser_ReturnsTimeOffInfo()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
             .ReturnsAsync(new TimeOff { Status = TimeOffStates.Approved, UserId = "userId" });
 
         timeOffRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<TimeOff>()))
             .ReturnsAsync(new TimeOff { Status = TimeOffStates.CancelRequested, UserId = "userId" });
 
-        var mediatorMock = new Mock<IMediator>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<IMediator> mediatorMock = new();
+        Mock<IMapper> mapperMock = new();
 
         mapperMock.Setup(x => x.Map<TimeOffInfo>(It.IsAny<TimeOff>()))
             .Returns(new TimeOffInfo { Status = TimeOffStates.CancelRequested, UserId = "userId" });
 
-        var handler = new CancelTimeOffRequestCommandHandler(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
+        CancelTimeOffRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
 
         // Act
-        var result = await handler.Handle(new CancelTimeOffRequestCommand(1, "userId"), CancellationToken.None);
+        TimeOffInfo result = await handler.Handle(new CancelTimeOffRequestCommand(1, "userId"), CancellationToken.None);
 
         // Assert
         Assert.Equal(TimeOffStates.CancelRequested, result.Status);
@@ -104,20 +104,20 @@ public class CancelTimeOffRequestTests
     public async Task CancelTimeOffRequest_WhenTimeOffIsApprovedAndOwnedByUser_UpdatesTimeOff()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
         timeOffRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
             .ReturnsAsync(new TimeOff { Status = TimeOffStates.Approved, UserId = "userId" });
 
         timeOffRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<TimeOff>()))
             .ReturnsAsync(new TimeOff { Status = TimeOffStates.CancelRequested, UserId = "userId" });
 
-        var mediatorMock = new Mock<IMediator>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<IMediator> mediatorMock = new();
+        Mock<IMapper> mapperMock = new();
 
         mapperMock.Setup(x => x.Map<TimeOffInfo>(It.IsAny<TimeOff>()))
             .Returns(new TimeOffInfo { Status = TimeOffStates.CancelRequested, UserId = "userId" });
 
-        var handler = new CancelTimeOffRequestCommandHandler(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
+        CancelTimeOffRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mediatorMock.Object, mapperMock.Object);
 
         // Act
         await handler.Handle(new CancelTimeOffRequestCommand(1, "userId"), CancellationToken.None);

@@ -1,6 +1,6 @@
+using TimeOffManagementAPI.Data.Access.Abstractions;
 using TimeOffManagementAPI.Data.Access.Contexts;
 using TimeOffManagementAPI.Data.Access.Interfaces;
-using TimeOffManagementAPI.Data.Access.Abstractions;
 using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Data.Access.Repositories;
@@ -19,7 +19,7 @@ public class TimeOffRepository : BaseRepository<TimeOff>, ITimeOffRepository
 
     public async Task<TimeOff> SoftDeleteAsync(int id)
     {
-        var timeOff = await GetByIdAsync(id);
+        TimeOff timeOff = await GetByIdAsync(id);
 
         timeOff.IsActive = false;
 

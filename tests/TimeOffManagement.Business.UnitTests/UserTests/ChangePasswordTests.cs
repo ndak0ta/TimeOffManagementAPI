@@ -11,10 +11,10 @@ public class ChangePasswordTests
     public async Task ChangePasswordCommandHandler_WhenUserNotFound_ThrowsArgumentNullException()
     {
         // Arrange
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
-        var mediatorMock = new Mock<IMediator>();
+        Mock<UserManager<User>> userManagerMock = new(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        Mock<IMediator> mediatorMock = new();
 
-        var command = new ChangePasswordCommand(new UserChangePassword
+        ChangePasswordCommand command = new(new UserChangePassword
         {
             Id = "1",
             OldPassword = "oldPassword",
@@ -24,10 +24,10 @@ public class ChangePasswordTests
         userManagerMock.Setup(x => x.FindByIdAsync(command.UserChangePassword!.Id))
             .ReturnsAsync((User)null!);
 
-        var handler = new ChangePasswordCommandHandler(userManagerMock.Object);
+        ChangePasswordCommandHandler handler = new(userManagerMock.Object);
 
         // Act
-        var result = await Assert.ThrowsAsync<ArgumentNullException>(() => handler.Handle(command, CancellationToken.None));
+        ArgumentNullException result = await Assert.ThrowsAsync<ArgumentNullException>(() => handler.Handle(command, CancellationToken.None));
 
         // Assert
         Assert.Equal("User not found (Parameter 'UserChangePassword')", result.Message);
@@ -40,10 +40,10 @@ public class ChangePasswordTests
     public async Task ChangePasswordCommandHandler_WhenOldPasswordIsIncorrect_ThrowsUnauthorizedAccessException()
     {
         // Arrange
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
-        var mediatorMock = new Mock<IMediator>();
+        Mock<UserManager<User>> userManagerMock = new(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        Mock<IMediator> mediatorMock = new();
 
-        var command = new ChangePasswordCommand(new UserChangePassword
+        ChangePasswordCommand command = new(new UserChangePassword
         {
             Id = "1",
             OldPassword = "oldPassword",
@@ -56,10 +56,10 @@ public class ChangePasswordTests
         userManagerMock.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
             .ReturnsAsync(false);
 
-        var handler = new ChangePasswordCommandHandler(userManagerMock.Object);
+        ChangePasswordCommandHandler handler = new(userManagerMock.Object);
 
         // Act
-        var result = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => handler.Handle(command, CancellationToken.None));
+        UnauthorizedAccessException result = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => handler.Handle(command, CancellationToken.None));
 
         // Assert
         Assert.Equal("Password is incorrect", result.Message);
@@ -72,10 +72,10 @@ public class ChangePasswordTests
     public async Task ChangePasswordCommandHandler_WhenPasswordChangeFails_ReturnsFalse()
     {
         // Arrange
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
-        var mediatorMock = new Mock<IMediator>();
+        Mock<UserManager<User>> userManagerMock = new(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        Mock<IMediator> mediatorMock = new();
 
-        var command = new ChangePasswordCommand(new UserChangePassword
+        ChangePasswordCommand command = new(new UserChangePassword
         {
             Id = "1",
             OldPassword = "oldPassword",
@@ -91,10 +91,10 @@ public class ChangePasswordTests
         userManagerMock.Setup(x => x.ChangePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Failed());
 
-        var handler = new ChangePasswordCommandHandler(userManagerMock.Object);
+        ChangePasswordCommandHandler handler = new(userManagerMock.Object);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        bool result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.False(result);
@@ -107,10 +107,10 @@ public class ChangePasswordTests
     public async Task ChangePasswordCommandHandler_WhenPasswordChangeSucceeds_ReturnsTrue()
     {
         // Arrange
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
-        var mediatorMock = new Mock<IMediator>();
+        Mock<UserManager<User>> userManagerMock = new(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        Mock<IMediator> mediatorMock = new();
 
-        var command = new ChangePasswordCommand(new UserChangePassword
+        ChangePasswordCommand command = new(new UserChangePassword
         {
             Id = "1",
             OldPassword = "oldPassword",
@@ -126,10 +126,10 @@ public class ChangePasswordTests
         userManagerMock.Setup(x => x.ChangePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
 
-        var handler = new ChangePasswordCommandHandler(userManagerMock.Object);
+        ChangePasswordCommandHandler handler = new(userManagerMock.Object);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        bool result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.True(result);

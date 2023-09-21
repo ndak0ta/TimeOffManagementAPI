@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using TimeOffManagementAPI.Data.Model.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using TimeOffManagementAPI.Business.Auth.Commands;
+using TimeOffManagementAPI.Data.Model.Dtos;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 

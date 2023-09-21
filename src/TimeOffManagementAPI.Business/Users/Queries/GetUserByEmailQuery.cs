@@ -29,12 +29,12 @@ public class GetUserByEmailQueryHandler : IRequestHandler<GetUserByEmailQuery, U
 
     public async Task<UserInfo> Handle(GetUserByEmailQuery getUserByEmailQuery, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(getUserByEmailQuery.Email);
+        User user = await _userManager.FindByEmailAsync(getUserByEmailQuery.Email);
 
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
-        var userInfo = _mapper.Map<UserInfo>(user);
+        UserInfo userInfo = _mapper.Map<UserInfo>(user);
         userInfo.Roles = await _userManager.GetRolesAsync(user);
 
         return userInfo;

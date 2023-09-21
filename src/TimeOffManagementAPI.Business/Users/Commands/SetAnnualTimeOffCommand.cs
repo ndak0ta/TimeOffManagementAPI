@@ -27,13 +27,13 @@ public class SetAnnualTimeOffCommandHandler : IRequestHandler<SetAnnualTimeOffCo
 
     public async Task<bool> Handle(SetAnnualTimeOffCommand setAnnualTimeOffCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(setAnnualTimeOffCommand.UserId)
+        User user = await _userManager.FindByIdAsync(setAnnualTimeOffCommand.UserId)
         ?? throw new ArgumentNullException("User not found");
 
         user.AnnualTimeOffs = setAnnualTimeOffCommand.AnnualTimeOffs;
         user.AutomaticAnnualTimeOffIncrement = false;
 
-        var result = await _userManager.UpdateAsync(user);
+        IdentityResult result = await _userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             return false;

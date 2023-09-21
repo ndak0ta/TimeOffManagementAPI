@@ -34,14 +34,14 @@ public class UpdateTimeOffCommandHandler : IRequestHandler<UpdateTimeOffCommand,
 
     public async Task<TimeOffInfo> Handle(UpdateTimeOffCommand request, CancellationToken cancellationToken)
     {
-        var timeOff = _mapper.Map<TimeOff>(request.TimeOffUpdate);
+        TimeOff timeOff = _mapper.Map<TimeOff>(request.TimeOffUpdate);
 
         timeOff.TotalDays = _mediator.Send(new CountDaysExcludingHolidaysCommand(timeOff.StartDate, timeOff.EndDate), cancellationToken).Result;
 
         if (timeOff.Status != TimeOffStates.Pending)
             throw new UnprocessableEntityException("You can't make changes on an approved or rejected time off request");
 
-        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
+        TimeOff updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 
         return _mapper.Map<TimeOffInfo>(updatedTimeOff);
     }

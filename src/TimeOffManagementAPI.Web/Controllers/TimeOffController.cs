@@ -1,11 +1,10 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using TimeOffManagementAPI.Data.Model.Dtos;
-using TimeOffManagementAPI.Business.Interfaces;
-using MediatR;
-using TimeOffManagementAPI.Business.TimeOffs.Queries;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TimeOffManagementAPI.Business.TimeOffs.Commands;
+using TimeOffManagementAPI.Business.TimeOffs.Queries;
+using TimeOffManagementAPI.Data.Model.Dtos;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -40,7 +39,7 @@ public class TimeOffController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByUserIdAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
@@ -58,7 +57,7 @@ public class TimeOffController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync(TimeOffRequest timeOffRequest)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId); // TODO mesaj yaz
@@ -79,7 +78,7 @@ public class TimeOffController : ControllerBase
             throw new ArgumentNullException(nameof(timeOffUpdate));
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
@@ -93,7 +92,7 @@ public class TimeOffController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
-        var result = await _mediator.Send(new DeleteTimeOffCommand(id));
+        bool result = await _mediator.Send(new DeleteTimeOffCommand(id));
 
         return Ok(new { result });
     }
@@ -108,7 +107,7 @@ public class TimeOffController : ControllerBase
     [HttpPost("{id:int}/cancel-request")]
     public async Task<IActionResult> CancelRequestAsync(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
@@ -125,7 +124,7 @@ public class TimeOffController : ControllerBase
     [HttpPost("{id:int}/cancel-draw")]
     public async Task<IActionResult> DrawCancelRequestAsync(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);

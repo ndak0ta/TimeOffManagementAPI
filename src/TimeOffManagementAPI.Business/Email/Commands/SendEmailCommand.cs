@@ -1,7 +1,7 @@
-using System.Net;
-using System.Net.Mail;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using System.Net;
+using System.Net.Mail;
 
 namespace TimeOffManagementAPI.Business.Email.Commands;
 
@@ -57,13 +57,13 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand>
         if (string.IsNullOrWhiteSpace(sendEmailCommand.Recipient))
             throw new ArgumentNullException("Recipient cannot be null.");
 
-        using var client = new SmtpClient(smtpServer, smtpPort);
+        using SmtpClient client = new(smtpServer, smtpPort);
 
         client.UseDefaultCredentials = false;
         client.Credentials = new NetworkCredential(username, password);
         client.EnableSsl = enableSsl;
 
-        var message = new MailMessage(fromAddress, sendEmailCommand.Recipient, sendEmailCommand.Subject, sendEmailCommand.Body)
+        MailMessage message = new(fromAddress, sendEmailCommand.Recipient, sendEmailCommand.Subject, sendEmailCommand.Body)
         {
             IsBodyHtml = true
         };

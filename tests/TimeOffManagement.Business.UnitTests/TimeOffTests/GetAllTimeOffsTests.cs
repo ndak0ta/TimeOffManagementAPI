@@ -11,13 +11,13 @@ public class GetAllTimeOffsTests
     public async Task GetAllTimeOffs_ReturnsAllTimeOffs()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var query = new GetAllTimeOffsQuery();
-        var handler = new GetAllTimeOffsQueryHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        GetAllTimeOffsQuery query = new();
+        GetAllTimeOffsQueryHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
-        var timeOffs = new List<TimeOff>();
+        List<TimeOff> timeOffs = new();
 
         timeOffRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(timeOffs);
         mapperMock.Setup(x => x.Map<IEnumerable<TimeOffInfo>>(It.IsAny<IEnumerable<TimeOff>>()))
@@ -28,7 +28,7 @@ public class GetAllTimeOffsTests
         });
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        IEnumerable<TimeOffInfo> result = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         Assert.IsAssignableFrom<IEnumerable<TimeOffInfo>>(result);

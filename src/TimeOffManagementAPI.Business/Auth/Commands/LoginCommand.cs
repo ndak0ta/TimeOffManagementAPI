@@ -1,13 +1,13 @@
 using AutoMapper;
 using MediatR;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 
 namespace TimeOffManagementAPI.Business.Auth.Commands;
 
@@ -49,12 +49,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         if (string.IsNullOrWhiteSpace(loginQuery.UserLogin.Password))
             throw new ArgumentNullException(nameof(loginQuery.UserLogin.Password));
 
-        var user = await _userManager.FindByNameAsync(loginQuery.UserLogin.UserName) ?? throw new UnauthorizedAccessException("Username or password is incorrect.");
+        User user = await _userManager.FindByNameAsync(loginQuery.UserLogin.UserName) ?? throw new UnauthorizedAccessException("Username or password is incorrect.");
 
         if (!user.IsActive)
             throw new UnauthorizedAccessException("Your account is not active. Please contact your manager.");
 
-        var result = await _signInManager.PasswordSignInAsync(user, loginQuery.UserLogin.Password, false, true);
+        SignInResult result = await _signInManager.PasswordSignInAsync(user, loginQuery.UserLogin.Password, false, true);
 
         if (result.Succeeded)
         {
@@ -63,8 +63,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         }
         else if (result.IsLockedOut)
         {
-            var lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
-            var timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
+            DateTimeOffset? lockoutEndDate = await _userManager.GetLockoutEndDateAsync(user);
+            int timeLeft = lockoutEndDate.Value.Subtract(DateTimeOffset.UtcNow).Minutes + 1;
             throw new UnauthorizedAccessException($"Your account is locked out. Please try again {timeLeft} minutes later.");
         }
         else
@@ -73,22 +73,22 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
             throw new UnauthorizedAccessException("Username or password is incorrect.");
         }
 
-        var userInfo = _mapper.Map<UserInfo>(user);
+        UserInfo userInfo = _mapper.Map<UserInfo>(user);
 
         return new LoginResponse { JWT = GenerateAccessToken(user), UserInfo = userInfo };
     }
 
     private string GenerateAccessToken(User user)
     {
-        var key = _configuration["Jwt:Key"];
+        string? key = _configuration["Jwt:Key"];
 
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentNullException(nameof(key));
 
-        var keyBytes = Encoding.UTF8.GetBytes(key);
-        var issuer = _configuration["Jwt:Issuer"];
-        var audience = _configuration["Jwt:Audience"];
-        var claims = new List<Claim>
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+        string? issuer = _configuration["Jwt:Issuer"];
+        string? audience = _configuration["Jwt:Audience"];
+        List<Claim> claims = new()
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -97,10 +97,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
 
         _userManager.GetRolesAsync(user).Result.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
 
-        var expires = DateTime.UtcNow.AddDays(1); // TODO sonra değiştir
-        var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
+        DateTime expires = DateTime.UtcNow.AddDays(1); // TODO sonra değiştir
+        SigningCredentials signingCredentials = new(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
+        JwtSecurityToken token = new(
             issuer: issuer,
             audience: audience,
             claims: claims,

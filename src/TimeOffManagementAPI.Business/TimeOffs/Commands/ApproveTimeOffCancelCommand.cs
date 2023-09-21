@@ -3,6 +3,7 @@ using MediatR;
 using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Constants;
 using TimeOffManagementAPI.Data.Model.Dtos;
+using TimeOffManagementAPI.Data.Model.Models;
 using TimeOffManagementAPI.Exceptions;
 
 namespace TimeOffManagementAPI.Business.TimeOffs.Commands;
@@ -32,7 +33,7 @@ public class ApproveTimeOffCancelCommandHandler : IRequestHandler<ApproveTimeOff
 
     public async Task<TimeOffInfo> Handle(ApproveTimeOffCancelCommand request, CancellationToken cancellationToken)
     {
-        var timeOff = await _timeOffRepository.GetByIdAsync(request.TimeOffId)
+        TimeOff timeOff = await _timeOffRepository.GetByIdAsync(request.TimeOffId)
         ?? throw new NotFoundException("Time off not found");
 
         if (timeOff.Status == TimeOffStates.Cancelled)
@@ -40,7 +41,7 @@ public class ApproveTimeOffCancelCommandHandler : IRequestHandler<ApproveTimeOff
 
         timeOff.Status = request.IsApproved ? TimeOffStates.Cancelled : TimeOffStates.CancelRejected;
 
-        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
+        TimeOff updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 
         return _mapper.Map<TimeOffInfo>(updatedTimeOff);
     }

@@ -1,11 +1,10 @@
 using MediatR;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using TimeOffManagementAPI.Data.Model.Dtos;
-using TimeOffManagementAPI.Business.Interfaces;
-using TimeOffManagementAPI.Business.Users.Queries;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TimeOffManagementAPI.Business.Users.Commands;
+using TimeOffManagementAPI.Business.Users.Queries;
+using TimeOffManagementAPI.Data.Model.Dtos;
 
 namespace TimeOffManagementAPI.Web.Controllers;
 
@@ -24,7 +23,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetByTokenAsync()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
@@ -68,7 +67,7 @@ public class UserController : ControllerBase
     [HttpPatch("update-contact")]
     public async Task<IActionResult> UpdateContactAsync([FromBody] UserUpdateContact user)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);
@@ -95,7 +94,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(string id)
     {
-        var result = await _mediator.Send(new DeleteUserCommand(id));
+        bool result = await _mediator.Send(new DeleteUserCommand(id));
 
         return Ok(new { result });
     }
@@ -103,7 +102,7 @@ public class UserController : ControllerBase
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword changePassword)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
             throw new ArgumentNullException(userId);

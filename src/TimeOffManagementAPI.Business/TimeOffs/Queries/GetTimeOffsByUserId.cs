@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using TimeOffManagementAPI.Data.Access.Interfaces;
 using TimeOffManagementAPI.Data.Model.Dtos;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Business.TimeOffs.Queries;
 
@@ -28,7 +29,7 @@ public class GetTimeOffByUserIdQueryHandler : IRequestHandler<GetTimeOffByUserId
 
     public async Task<IEnumerable<TimeOffInfo>> Handle(GetTimeOffByUserIdQuery request, CancellationToken cancellationToken)
     {
-        var timeOffs = (await _timeOffRepository.GetByUserIdAsync(request.Id)).Where(t => t.IsActive);
+        IEnumerable<TimeOff> timeOffs = (await _timeOffRepository.GetByUserIdAsync(request.Id)).Where(t => t.IsActive);
 
         return _mapper.Map<IEnumerable<TimeOffInfo>>(timeOffs);
     }

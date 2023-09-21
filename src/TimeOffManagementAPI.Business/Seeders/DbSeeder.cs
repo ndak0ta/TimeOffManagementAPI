@@ -1,10 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using TimeOffManagementAPI.Data.Model.Models;
-using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Business.TimeOffs.Commands;
 using TimeOffManagementAPI.Business.TimeOffs.Queries;
+using TimeOffManagementAPI.Data.Model.Dtos;
+using TimeOffManagementAPI.Data.Model.Models;
 
 namespace TimeOffManagementAPI.Business.Seeders;
 
@@ -12,16 +12,16 @@ public static class DbSeeder
 {
     public static async Task Seed(IServiceProvider serviceProvider)
     {
-        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
+        UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        RoleManager<Role> roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
 
-        var roles = new List<Role>
+        List<Role> roles = new()
         {
             new() { Name = "Manager" },
             new() { Name = "Employee" }
         };
 
-        foreach (var role in roles)
+        foreach (Role role in roles)
         {
             if (!roleManager.RoleExistsAsync(role.Name).Result)
             {
@@ -29,16 +29,16 @@ public static class DbSeeder
             }
         }
 
-        var users = new List<User>
+        List<User> users = new()
         {
             new() { UserName = "manager", Email = "manager@manager.com", EmailConfirmed = true },
         };
 
-        foreach (var user in users)
+        foreach (User user in users)
         {
             if (userManager.FindByNameAsync(user.UserName).Result == null)
             {
-                var result = await userManager.CreateAsync(user, "manager");
+                IdentityResult result = await userManager.CreateAsync(user, "manager");
 
                 if (result.Succeeded)
                 {
@@ -50,17 +50,17 @@ public static class DbSeeder
 
     public static async Task SeedDevelopment(IServiceProvider serviceProvider)
     {
-        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
-        var mediator = serviceProvider.GetRequiredService<IMediator>();
+        UserManager<User> userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        RoleManager<Role> roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
+        IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
 
-        var roles = new List<Role>
+        List<Role> roles = new()
         {
             new() { Name = "Manager" },
             new() { Name = "Employee" }
         };
 
-        foreach (var role in roles)
+        foreach (Role role in roles)
         {
             if (!roleManager.RoleExistsAsync(role.Name).Result)
             {
@@ -68,7 +68,7 @@ public static class DbSeeder
             }
         }
 
-        var users = new List<User>
+        List<User> users = new()
         {
             new() {
                 UserName = "manager",
@@ -87,8 +87,8 @@ public static class DbSeeder
                 Email = "alihsnkhrmn@protonmail.com",
                 Address = "Yalova",
                 PhoneNumber = "+905383218734",
-                DateOfBirth = DateTime.TryParse("2001-11-30", out var dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-21),
-                HireDate = DateTime.TryParse("2021-09-01", out var hireDate) ? hireDate : DateTime.Now,
+                DateOfBirth = DateTime.TryParse("2001-11-30", out DateTime dateOfBirth) ? dateOfBirth : DateTime.Now.AddYears(-21),
+                HireDate = DateTime.TryParse("2021-09-01", out DateTime hireDate) ? hireDate : DateTime.Now,
                 AnnualTimeOffs = 26,
                 RemainingAnnualTimeOffs = 26,
             },
@@ -154,7 +154,7 @@ public static class DbSeeder
             },
         };
 
-        foreach (var user in users)
+        foreach (User user in users)
         {
             if (user.Email == null)
                 throw new NullReferenceException("Email is null");
@@ -170,10 +170,10 @@ public static class DbSeeder
             }
         }
 
-        var user1 = await userManager.FindByNameAsync(users[1].UserName);
-        var user2 = await userManager.FindByNameAsync(users[2].UserName);
+        User user1 = await userManager.FindByNameAsync(users[1].UserName);
+        User user2 = await userManager.FindByNameAsync(users[2].UserName);
 
-        var timeOffs = new List<TimeOffRequest>
+        List<TimeOffRequest> timeOffs = new()
         {
             new() {
                 UserId = user1.Id,
@@ -197,7 +197,7 @@ public static class DbSeeder
             },
         };
 
-        foreach (var timeOff in timeOffs)
+        foreach (TimeOffRequest timeOff in timeOffs)
         {
             await mediator.Send(new CreateTimeOffCommand(timeOff));
         }

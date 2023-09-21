@@ -34,7 +34,7 @@ public class CreateTimeOffCommandHandler : IRequestHandler<CreateTimeOffCommand,
 
     public async Task<TimeOffInfo> Handle(CreateTimeOffCommand request, CancellationToken cancellationToken)
     {
-        var timeOff = _mapper.Map<TimeOff>(request.TimeOffRequest);
+        TimeOff timeOff = _mapper.Map<TimeOff>(request.TimeOffRequest);
 
         if (timeOff.StartDate < DateTime.UtcNow)
             throw new ArgumentException("Start date must be in the future");
@@ -51,12 +51,12 @@ public class CreateTimeOffCommandHandler : IRequestHandler<CreateTimeOffCommand,
             throw new ArgumentException("User id is required");
 
 
-        var user = await _mediator.Send(new GetUserByIdQuery(timeOff.UserId), cancellationToken);
+        UserInfo user = await _mediator.Send(new GetUserByIdQuery(timeOff.UserId), cancellationToken);
 
         if (timeOff.TotalDays > user.RemainingAnnualTimeOffs)
             throw new UnprocessableEntityException("You don't have enough time off left");
 
-        var CreatedTimeOff = await _timeOffRepository.CreateAsync(timeOff);
+        TimeOff CreatedTimeOff = await _timeOffRepository.CreateAsync(timeOff);
 
         return _mapper.Map<TimeOffInfo>(CreatedTimeOff);
     }

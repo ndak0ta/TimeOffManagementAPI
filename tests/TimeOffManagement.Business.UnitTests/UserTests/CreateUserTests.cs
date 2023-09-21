@@ -12,14 +12,14 @@ public class CreateUserTests
     public async Task CreateUserCommandHandler_ShouldCreateUser()
     {
         // Arrange
-        var userRegistration = new UserRegistration
+        UserRegistration userRegistration = new()
         {
             FirstName = "John",
             LastName = "Doe",
             Email = "mock@mock.com"
         };
 
-        var user = new User
+        User user = new()
         {
             FirstName = userRegistration.FirstName,
             LastName = userRegistration.LastName,
@@ -27,45 +27,33 @@ public class CreateUserTests
             UserName = "JohnDoe"
         };
 
-        var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        Mock<UserManager<User>> userManagerMock = new(Mock.Of<IUserStore<User>>(), null!, null!, null!, null!, null!, null!, null!, null!);
         userManagerMock.Setup(x => x.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
-            .ReturnsAsync(IdentityResult.Success)
-            .Verifiable();
+            .ReturnsAsync(IdentityResult.Success);
 
         userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<User>(), It.IsAny<string>()))
-            .ReturnsAsync(IdentityResult.Success)
-            .Verifiable();
+            .ReturnsAsync(IdentityResult.Success);
 
         userManagerMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
-            .ReturnsAsync(user)
-            .Verifiable();
+            .ReturnsAsync(user);
 
-        var mapperMock = new Mock<IMapper>();
+        Mock<IMapper> mapperMock = new();
         mapperMock.Setup(x => x.Map<User>(It.IsAny<UserRegistration>()))
-            .Returns(user)
-            .Verifiable();
+            .Returns(user);
 
-        mapperMock.Setup(x => x.Map<UserInfo>(It.IsAny<User>()))
-            .Returns(new UserInfo
-            {
-                FirstName = userRegistration.FirstName,
-                LastName = userRegistration.LastName,
-                Email = userRegistration.Email,
-                UserName = "JohnDoe"
-            })
-            .Verifiable();
+        mapperMock.Setup(x => x.Map<UserInfo>(It.IsAny<User>())).Returns(new UserInfo { FirstName = userRegistration.FirstName, LastName = userRegistration.LastName, Email = userRegistration.Email, UserName = "JohnDoe" });
 
-        var mediatorMock = new Mock<IMediator>();
+        Mock<IMediator> mediatorMock = new();
 
         mediatorMock.Setup(x => x.Send(It.IsAny<SendEmailCommand>(), It.IsAny<CancellationToken>()))
             .Verifiable();
 
-        var command = new CreateUserCommand(userRegistration);
+        CreateUserCommand command = new(userRegistration);
 
-        var handler = new CreateUserCommandHandler(userManagerMock.Object, mapperMock.Object, mediatorMock.Object);
+        CreateUserCommandHandler handler = new(userManagerMock.Object, mapperMock.Object, mediatorMock.Object);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        UserInfo result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);

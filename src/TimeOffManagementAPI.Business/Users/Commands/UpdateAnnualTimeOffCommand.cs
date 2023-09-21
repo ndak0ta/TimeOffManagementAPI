@@ -21,9 +21,9 @@ public class UpdaAnnualTimeOffCommandHandler : IRequestHandler<UpdaAnnualTimeOff
 
     public async Task<bool> Handle(UpdaAnnualTimeOffCommand updaAnnualTimeOffCommand, CancellationToken cancellationToken)
     {
-        var users = await _userManager.Users.ToListAsync();
+        List<User> users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
 
-        foreach (var user in users)
+        foreach (User? user in users)
         {
             if (!user.AutomaticAnnualTimeOffIncrement)
                 continue;
@@ -32,7 +32,7 @@ public class UpdaAnnualTimeOffCommandHandler : IRequestHandler<UpdaAnnualTimeOff
 
             user.AnnualTimeOffs = Convert.ToInt32(workYear > 14 ? 26 : workYear > 5 ? 20 : workYear > 1 ? 14 : 0);
 
-            var result = await _userManager.UpdateAsync(user);
+            IdentityResult result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
                 throw new Exception("Error while updating annual time off");

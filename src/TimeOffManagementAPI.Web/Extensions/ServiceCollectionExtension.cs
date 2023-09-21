@@ -1,22 +1,20 @@
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using TimeOffManagementAPI.Web.Filters;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using TimeOffManagementAPI.Business.Auth.Commands;
 using TimeOffManagementAPI.Business.BackgroundServices;
 using TimeOffManagementAPI.Data.Access.Contexts;
-using TimeOffManagementAPI.Data.Access.Repositories;
 using TimeOffManagementAPI.Data.Access.Interfaces;
+using TimeOffManagementAPI.Data.Access.Repositories;
 using TimeOffManagementAPI.Data.Model.Mappings;
 using TimeOffManagementAPI.Data.Model.Models;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MediatR;
-using TimeOffManagementAPI.Business.Auth.Commands;
+using TimeOffManagementAPI.Web.Filters;
 
 namespace TimeOffManagementAPI.Web.Extensions;
 
@@ -76,12 +74,12 @@ public static class ServiceCollectionExtension
 
     public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var keyString = configuration["Jwt:Key"];
+        string? keyString = configuration["Jwt:Key"];
 
         if (string.IsNullOrEmpty(keyString))
             throw new ArgumentNullException("Jwt:Key");
 
-        var key = Encoding.ASCII.GetBytes(keyString);
+        byte[] key = Encoding.ASCII.GetBytes(keyString);
 
         services.AddAuthentication(options =>
         {

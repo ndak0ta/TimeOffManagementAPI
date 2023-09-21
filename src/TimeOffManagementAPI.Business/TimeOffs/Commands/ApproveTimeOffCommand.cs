@@ -40,14 +40,14 @@ public class ApproveTimeOffCommandHandler : IRequestHandler<ApproveTimeOffComman
 
     public async Task<TimeOffInfo> Handle(ApproveTimeOffCommand request, CancellationToken cancellationToken)
     {
-        var timeOff = await _timeOffRepository.GetByIdAsync(request.Id)
+        TimeOff timeOff = await _timeOffRepository.GetByIdAsync(request.Id)
         ?? throw new NotFoundException("Time off not found");
 
         timeOff.Status = request.IsApproved ? TimeOffStates.Approved : TimeOffStates.Rejected;
 
-        var updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
+        TimeOff updatedTimeOff = await _timeOffRepository.UpdateAsync(timeOff);
 
-        var user = await _userManager.FindByIdAsync(updatedTimeOff.UserId);
+        User user = await _userManager.FindByIdAsync(updatedTimeOff.UserId);
 
         if (updatedTimeOff.Status == TimeOffStates.Approved)
         {

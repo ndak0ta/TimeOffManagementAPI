@@ -11,8 +11,8 @@ public class DeletePastTimeOffTests
     public async Task DeletePastTimeOffCommandHandler_WhenTimeOffIsNotFound_DeletesTimeOffs()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var timeOffs = new List<TimeOff>
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        List<TimeOff> timeOffs = new()
         {
             new() {
                 Id = 1,
@@ -28,8 +28,8 @@ public class DeletePastTimeOffTests
             },
         };
 
-        var command = new DeletePastTimeOffCommand();
-        var handler = new DeletePastTimeOffCommandHandler(timeOffRepositoryMock.Object);
+        DeletePastTimeOffCommand command = new();
+        DeletePastTimeOffCommandHandler handler = new(timeOffRepositoryMock.Object);
 
         timeOffRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(timeOffs);
 

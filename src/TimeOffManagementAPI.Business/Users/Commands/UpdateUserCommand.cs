@@ -1,7 +1,6 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TimeOffManagementAPI.Business.Users.Queries;
 using TimeOffManagementAPI.Data.Model.Dtos;
 using TimeOffManagementAPI.Data.Model.Models;
 
@@ -32,7 +31,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserI
 
     public async Task<UserInfo> Handle(UpdateUserCommand updateUserCommand, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(updateUserCommand.UserUpdate?.Id);
+        User user = await _userManager.FindByIdAsync(updateUserCommand.UserUpdate?.Id);
 
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -45,12 +44,12 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserI
         user.DateOfBirth = updateUserCommand.UserUpdate?.DateOfBirth ?? user.DateOfBirth;
         user.HireDate = updateUserCommand.UserUpdate?.HireDate ?? user.HireDate;
 
-        var result = await _userManager.UpdateAsync(user);
+        IdentityResult result = await _userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             throw new Exception("Failed to update user");
 
-        var userInfo = _mapper.Map<UserInfo>(user);
+        UserInfo userInfo = _mapper.Map<UserInfo>(user);
 
         userInfo.Roles = await _userManager.GetRolesAsync(user);
 

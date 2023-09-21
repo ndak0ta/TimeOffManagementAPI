@@ -2,7 +2,7 @@
 using TimeOffManagementAPI.Web.Extensions;
 
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddJsonFile(builder.Configuration);
 
@@ -39,7 +39,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddCustomCors();
 
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
@@ -47,13 +47,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    using var scope = app.Services.CreateScope();
+    using IServiceScope scope = app.Services.CreateScope();
     await DbSeeder.SeedDevelopment(scope.ServiceProvider);
 }
 else if (app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
-    using var scope = app.Services.CreateScope();
+    using IServiceScope scope = app.Services.CreateScope();
     await DbSeeder.Seed(scope.ServiceProvider);
 }
 

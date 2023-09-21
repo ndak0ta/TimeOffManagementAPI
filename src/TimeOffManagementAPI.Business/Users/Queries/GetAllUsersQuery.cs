@@ -22,13 +22,13 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, IEnumer
 
     public async Task<IEnumerable<UserInfo>> Handle(GetAllUsersQuery getAllUsersQuery, CancellationToken cancellationToken)
     {
-        var users = await _userManager.Users.Where(u => u.IsActive).ToListAsync();
+        List<User> users = await _userManager.Users.Where(u => u.IsActive).ToListAsync();
 
-        var userInfos = new List<UserInfo>();
+        List<UserInfo> userInfos = new();
 
-        foreach (var user in users)
+        foreach (User? user in users)
         {
-            var userToAdd = _mapper.Map<UserInfo>(user);
+            UserInfo userToAdd = _mapper.Map<UserInfo>(user);
             userToAdd.Roles = await _userManager.GetRolesAsync(user);
             userInfos.Add(userToAdd);
         }

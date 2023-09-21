@@ -29,12 +29,12 @@ public class GetUserByUsernameQueryHandler : IRequestHandler<GetUserByUsernameQu
 
     public async Task<UserInfo> Handle(GetUserByUsernameQuery getUserByUsernameQuery, CancellationToken cancellationToken)
     {
-        var user = await _userManaer.FindByNameAsync(getUserByUsernameQuery.Username);
+        User user = await _userManaer.FindByNameAsync(getUserByUsernameQuery.Username);
 
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
-        var userInfo = _mapper.Map<UserInfo>(user);
+        UserInfo userInfo = _mapper.Map<UserInfo>(user);
         userInfo.Roles = await _userManaer.GetRolesAsync(user);
 
         return userInfo;

@@ -15,11 +15,11 @@ public class UpdateTimeOffTests
     public async Task UpdateTimeOffCommandHandler_ShouldReturnUpdatedTimeOff()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
-        var mediatorMock = new Mock<IMediator>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
+        Mock<IMediator> mediatorMock = new();
 
-        var timeOff = new TimeOff
+        TimeOff timeOff = new()
         {
             Id = 1,
             StartDate = new DateTime(2021, 1, 1),
@@ -27,14 +27,14 @@ public class UpdateTimeOffTests
             Status = TimeOffStates.Pending
         };
 
-        var timeOffUpdate = new TimeOffUpdate
+        TimeOffUpdate timeOffUpdate = new()
         {
             Id = 1,
             StartDate = new DateTime(2021, 1, 1),
             EndDate = new DateTime(2021, 1, 5),
         };
 
-        var timeOffInfo = new TimeOffInfo
+        TimeOffInfo timeOffInfo = new()
         {
             Id = 1,
             StartDate = new DateTime(2021, 1, 1),
@@ -42,17 +42,17 @@ public class UpdateTimeOffTests
             Status = TimeOffStates.Pending
         };
 
-        var command = new UpdateTimeOffCommand(timeOffUpdate);
+        UpdateTimeOffCommand command = new(timeOffUpdate);
 
         timeOffRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<TimeOff>())).ReturnsAsync(timeOff);
         mapperMock.Setup(x => x.Map<TimeOff>(It.IsAny<TimeOffUpdate>())).Returns(timeOff);
         mediatorMock.Setup(x => x.Send(It.IsAny<CountDaysExcludingHolidaysCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(5);
         mapperMock.Setup(x => x.Map<TimeOffInfo>(It.IsAny<TimeOff>())).Returns(timeOffInfo);
 
-        var handler = new UpdateTimeOffCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object, mediatorMock.Object);
+        UpdateTimeOffCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object, mediatorMock.Object);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        TimeOffInfo result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(timeOffInfo, result);
@@ -62,11 +62,11 @@ public class UpdateTimeOffTests
     public async Task UpdateTimeOffCommandHandler_WhenTimeOffIsNotPending_ShouldThrowUnprocessableEntityException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
-        var mediatorMock = new Mock<IMediator>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
+        Mock<IMediator> mediatorMock = new();
 
-        var timeOff = new TimeOff
+        TimeOff timeOff = new()
         {
             Id = 1,
             StartDate = new DateTime(2021, 1, 1),
@@ -74,23 +74,23 @@ public class UpdateTimeOffTests
             Status = TimeOffStates.Approved
         };
 
-        var timeOffUpdate = new TimeOffUpdate
+        TimeOffUpdate timeOffUpdate = new()
         {
             Id = 1,
             StartDate = new DateTime(2021, 1, 1),
             EndDate = new DateTime(2021, 1, 5),
         };
 
-        var command = new UpdateTimeOffCommand(timeOffUpdate);
+        UpdateTimeOffCommand command = new(timeOffUpdate);
 
         timeOffRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<TimeOff>())).ReturnsAsync(timeOff);
         mapperMock.Setup(x => x.Map<TimeOff>(It.IsAny<TimeOffUpdate>())).Returns(timeOff);
         mediatorMock.Setup(x => x.Send(It.IsAny<CountDaysExcludingHolidaysCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(5);
 
-        var handler = new UpdateTimeOffCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object, mediatorMock.Object);
+        UpdateTimeOffCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object, mediatorMock.Object);
 
         // Act
-        var result = await Assert.ThrowsAsync<UnprocessableEntityException>(() => handler.Handle(command, CancellationToken.None));
+        UnprocessableEntityException result = await Assert.ThrowsAsync<UnprocessableEntityException>(() => handler.Handle(command, CancellationToken.None));
 
         // Assert
         Assert.Equal("You can't make changes on an approved or rejected time off request", result.Message);

@@ -13,13 +13,13 @@ public class DrawCancelRequestTests
     public async Task DrawCancelRequest_WhenCalled_ReturnsTimeOffInfo()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var command = new DrawCancelRequestCommand(1, "1");
-        var handler = new DrawCancelRequestCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        DrawCancelRequestCommand command = new(1, "1");
+        DrawCancelRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
-        var timeOff = new TimeOff
+        TimeOff timeOff = new()
         {
             Id = 1,
             UserId = "1",
@@ -33,7 +33,7 @@ public class DrawCancelRequestTests
             .Returns(new TimeOffInfo());
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        TimeOffInfo result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.IsType<TimeOffInfo>(result);
@@ -43,13 +43,13 @@ public class DrawCancelRequestTests
     public async Task DrawCancelRequest_WhenStatusNotCancelRequested_ReturnsUnprocessableEntityException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var command = new DrawCancelRequestCommand(1, "1");
-        var handler = new DrawCancelRequestCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        DrawCancelRequestCommand command = new(1, "1");
+        DrawCancelRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
-        var timeOff = new TimeOff
+        TimeOff timeOff = new()
         {
             Id = 1,
             UserId = "2",
@@ -67,13 +67,13 @@ public class DrawCancelRequestTests
     public async Task DrawCancelRequest_WhenUserIdNotMatch_ReturnsUnprocessableEntityException()
     {
         // Arrange
-        var timeOffRepositoryMock = new Mock<ITimeOffRepository>();
-        var mapperMock = new Mock<IMapper>();
+        Mock<ITimeOffRepository> timeOffRepositoryMock = new();
+        Mock<IMapper> mapperMock = new();
 
-        var command = new DrawCancelRequestCommand(1, "otherUserId");
-        var handler = new DrawCancelRequestCommandHandler(timeOffRepositoryMock.Object, mapperMock.Object);
+        DrawCancelRequestCommand command = new(1, "otherUserId");
+        DrawCancelRequestCommandHandler handler = new(timeOffRepositoryMock.Object, mapperMock.Object);
 
-        var timeOff = new TimeOff
+        TimeOff timeOff = new()
         {
             Id = 1,
             UserId = "1",

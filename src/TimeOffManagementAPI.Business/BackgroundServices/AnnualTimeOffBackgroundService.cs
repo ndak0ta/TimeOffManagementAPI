@@ -1,7 +1,7 @@
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using MediatR;
 using TimeOffManagementAPI.Business.Users.Commands;
 
 namespace TimeOffManagementAPI.Business.BackgroundServices;
@@ -27,11 +27,11 @@ public class AnnualTimeOffBackgroundService : BackgroundService
         {
             _logger.LogInformation($"AnnualTimeOffBackgroundService task doing background work.");
 
-            using (var scope = _serviceProvider.CreateScope())
+            using (IServiceScope scope = _serviceProvider.CreateScope())
             {
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                await mediator.Send(new UpdaAnnualTimeOffCommand());
+                await mediator.Send(new UpdaAnnualTimeOffCommand(), stoppingToken);
             }
 
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
